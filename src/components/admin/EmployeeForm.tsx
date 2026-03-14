@@ -94,19 +94,21 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
 
         if (signUpError) throw signUpError;
 
-        // Wait for profile to be created by trigger, then update it
         if (signUpData.user) {
-          // Small delay to let trigger execute
-          await new Promise((r) => setTimeout(r, 1500));
-
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('id')
-            .eq('user_id', signUpData.user.id)
-            .single();
+          // Retry a few times to wait for trigger
+          let profile = null;
+          for (let i = 0; i < 5; i++) {
+            await new Promise((r) => setTimeout(r, 1000));
+            const { data } = await supabase
+              .from('profiles')
+              .select('id')
+              .eq('user_id', signUpData.user.id)
+              .single();
+            if (data) { profile = data; break; }
+          }
 
           if (profile) {
-            await supabase
+            const { error: updateError } = await supabase
               .from('profiles')
               .update({
                 full_name: form.full_name,
@@ -118,6 +120,9 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
                 joining_date: form.joining_date || null,
               })
               .eq('id', profile.id);
+            if (updateError) console.error('Profile update error:', updateError);
+          } else {
+            console.error('Profile not found after signup');
           }
         }
 
@@ -168,6 +173,8 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
                     placeholder="Min 6 characters"
                     required
                     minLength={6}
+                    autoComplete="new-password"
+                    data-lpignore="true"
                   />
                 </div>
               </div>
@@ -184,7 +191,7 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="phone">Phone</Label>
-                <Input id="phone" value={form.phone} onChange={(e) => handleChange('phone', e.target.value)} placeholder="+91 98765 43210" />
+                <Input id="phone" value={form.phone} onChange={(e) => { const val = e.target.value.replace(/\D/g, '').slice(0, 10); handleChange('phone', val); }} placeholder="9876543210" maxLength={10} inputMode="numeric" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="department">Department</Label>

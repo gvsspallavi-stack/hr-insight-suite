@@ -154,12 +154,7 @@ const EmployeeDashboard = () => {
         <Card className="bg-primary text-primary-foreground border-0">
           <CardContent className="p-6">
             <h2 className="text-2xl font-bold">Welcome, {profile?.full_name || 'Employee'}!</h2>
-            <p className="text-primary-foreground/80 mt-1">Access your HR services from the portal below.</p>
-            {profile?.department && (
-              <Badge variant="secondary" className="mt-2 bg-primary-foreground/20 text-primary-foreground border-0">
-                {profile.department} — {profile.designation || 'Employee'}
-              </Badge>
-            )}
+            <p className="text-primary-foreground/80 mt-1">{profile?.department ? `${profile.department} — ${profile.designation || 'Employee'}` : 'Your employee portal'}</p>
           </CardContent>
         </Card>
 
