@@ -94,6 +94,7 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
 
         if (signUpError) throw signUpError;
 
+        if (signUpData.user) {
           // Retry a few times to wait for trigger
           let profile = null;
           for (let i = 0; i < 5; i++) {
