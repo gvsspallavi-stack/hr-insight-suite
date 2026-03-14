@@ -76,7 +76,10 @@ const LeaveRequestForm = ({ onBack }: LeaveRequestFormProps) => {
   };
 
   const sickRemaining = balance ? balance.sick_leave_total - balance.sick_leave_used : 12;
-  const casualRemaining = balance ? balance.casual_leave_total - balance.casual_leave_used : 12;
+  // CL: 1 per month, carries forward. Accrued = months elapsed so far
+  const currentMonth = new Date().getMonth() + 1;
+  const clAccrued = balance ? Math.min(currentMonth, balance.casual_leave_total) : currentMonth;
+  const casualRemaining = balance ? clAccrued - balance.casual_leave_used : clAccrued;
 
   const statusColors: Record<string, string> = {
     pending: 'bg-warning text-warning-foreground',
@@ -94,14 +97,16 @@ const LeaveRequestForm = ({ onBack }: LeaveRequestFormProps) => {
       <div className="grid grid-cols-2 gap-4">
         <Card>
           <CardContent className="p-4 text-center">
-            <p className="text-2xl font-bold text-foreground">{sickRemaining}</p>
-            <p className="text-sm text-muted-foreground">Sick Leave Remaining</p>
+            <p className="text-2xl font-bold text-foreground">{casualRemaining}</p>
+            <p className="text-sm text-muted-foreground">CL Remaining (Monthly)</p>
+            <p className="text-xs text-muted-foreground mt-1">1/month, carries forward</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <p className="text-2xl font-bold text-foreground">{casualRemaining}</p>
-            <p className="text-sm text-muted-foreground">Casual Leave Remaining</p>
+            <p className="text-2xl font-bold text-foreground">{sickRemaining}</p>
+            <p className="text-sm text-muted-foreground">Sick Leave Remaining</p>
+            <p className="text-xs text-muted-foreground mt-1">12/year, use anytime</p>
           </CardContent>
         </Card>
       </div>
@@ -121,7 +126,7 @@ const LeaveRequestForm = ({ onBack }: LeaveRequestFormProps) => {
                 <Select value={leaveType} onValueChange={setLeaveType}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="casual">Casual Leave ({casualRemaining} left)</SelectItem>
+                    <SelectItem value="casual">CL - Monthly Leave ({casualRemaining} left)</SelectItem>
                     <SelectItem value="sick">Sick Leave ({sickRemaining} left)</SelectItem>
                     <SelectItem value="other">Other (LOP)</SelectItem>
                   </SelectContent>

@@ -55,13 +55,18 @@ const LeaveManager = ({ onBack }: LeaveManagerProps) => {
         let lopDays = 0;
 
         if (leaveType === 'sick') {
+          // Sick leave: 12 days per year, use anytime
           const remaining = balance.sick_leave_total - balance.sick_leave_used;
           const usable = Math.min(days, remaining);
           lopDays = days - usable;
           await supabase.from('leave_balances').update({ sick_leave_used: balance.sick_leave_used + usable }).eq('id', balance.id);
         } else if (leaveType === 'casual') {
-          const remaining = balance.casual_leave_total - balance.casual_leave_used;
-          const usable = Math.min(days, remaining);
+          // CL (Monthly Leave): 1 per month, unused carries forward
+          // Total available = months elapsed so far - already used
+          const currentMonth = new Date().getMonth() + 1; // 1-12
+          const clAccrued = Math.min(currentMonth, balance.casual_leave_total); // max 12
+          const remaining = clAccrued - balance.casual_leave_used;
+          const usable = Math.min(days, Math.max(remaining, 0));
           lopDays = days - usable;
           await supabase.from('leave_balances').update({ casual_leave_used: balance.casual_leave_used + usable }).eq('id', balance.id);
         } else {
