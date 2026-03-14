@@ -29,6 +29,7 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
     designation: '',
     employment_type: 'full-time',
     joining_date: '',
+    base_salary: '',
   });
   const [password, setPassword] = useState('');
   const [employeeId, setEmployeeId] = useState('');
@@ -44,6 +45,7 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
         designation: employee.designation || '',
         employment_type: employee.employment_type || 'full-time',
         joining_date: employee.joining_date || '',
+        base_salary: String((employee as any).base_salary || ''),
       });
     }
   }, [employee]);
@@ -69,7 +71,8 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
             designation: form.designation,
             employment_type: form.employment_type,
             joining_date: form.joining_date || null,
-          })
+            base_salary: Number(form.base_salary) || 0,
+          } as any)
           .eq('id', employee.id);
 
         if (error) throw error;
@@ -118,9 +121,16 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
                 designation: form.designation,
                 employment_type: form.employment_type,
                 joining_date: form.joining_date || null,
-              })
+                base_salary: Number(form.base_salary) || 0,
+              } as any)
               .eq('id', profile.id);
             if (updateError) console.error('Profile update error:', updateError);
+
+            // Create leave balance for current year
+            await supabase.from('leave_balances').insert({
+              employee_id: profile.id,
+              year: new Date().getFullYear(),
+            } as any).single();
           } else {
             console.error('Profile not found after signup');
           }
@@ -218,6 +228,10 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
               <div className="space-y-2">
                 <Label htmlFor="joining_date">Joining Date</Label>
                 <Input id="joining_date" type="date" value={form.joining_date} onChange={(e) => handleChange('joining_date', e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="base_salary">Monthly Salary (₹)</Label>
+                <Input id="base_salary" type="number" value={form.base_salary} onChange={(e) => handleChange('base_salary', e.target.value)} placeholder="e.g. 50000" min={0} />
               </div>
             </div>
 

@@ -7,8 +7,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CalendarCheck, FileText, DollarSign, LogOut, ClipboardList, FolderOpen, User, ArrowLeft, Eye, Download } from 'lucide-react';
+import MyAttendance from '@/components/employee/MyAttendance';
+import LeaveRequestForm from '@/components/employee/LeaveRequestForm';
+import MyPayslips from '@/components/employee/MyPayslips';
 
-type View = 'dashboard' | 'profile' | 'certificates';
+type View = 'dashboard' | 'profile' | 'certificates' | 'attendance' | 'leaves' | 'payslips';
 
 const EmployeeDashboard = () => {
   const { role, user, profileId, loading, signOut } = useAuth();
@@ -18,11 +21,7 @@ const EmployeeDashboard = () => {
     queryKey: ['my-profile', profileId],
     enabled: !!profileId,
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', profileId!)
-        .single();
+      const { data, error } = await supabase.from('profiles').select('*').eq('id', profileId!).single();
       if (error) throw error;
       return data;
     },
@@ -32,11 +31,7 @@ const EmployeeDashboard = () => {
     queryKey: ['my-certificates', profileId],
     enabled: !!profileId,
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('documents')
-        .select('*')
-        .eq('employee_id', profileId!)
-        .order('created_at', { ascending: false });
+      const { data, error } = await supabase.from('documents').select('*').eq('employee_id', profileId!).order('created_at', { ascending: false });
       if (error) throw error;
       return data;
     },
@@ -58,6 +53,10 @@ const EmployeeDashboard = () => {
   };
 
   const renderContent = () => {
+    if (view === 'attendance') return <MyAttendance onBack={() => setView('dashboard')} />;
+    if (view === 'leaves') return <LeaveRequestForm onBack={() => setView('dashboard')} />;
+    if (view === 'payslips') return <MyPayslips onBack={() => setView('dashboard')} />;
+
     if (view === 'profile' && profile) {
       const fields = [
         { label: 'Full Name', value: profile.full_name },
@@ -75,9 +74,7 @@ const EmployeeDashboard = () => {
             <ArrowLeft className="w-4 h-4" /> Back
           </button>
           <Card>
-            <CardHeader>
-              <CardTitle>My Profile</CardTitle>
-            </CardHeader>
+            <CardHeader><CardTitle>My Profile</CardTitle></CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {fields.map((f) => (
@@ -100,9 +97,7 @@ const EmployeeDashboard = () => {
             <ArrowLeft className="w-4 h-4" /> Back
           </button>
           <Card>
-            <CardHeader>
-              <CardTitle>My Certificates</CardTitle>
-            </CardHeader>
+            <CardHeader><CardTitle>My Certificates</CardTitle></CardHeader>
             <CardContent>
               {certificates.length === 0 ? (
                 <p className="text-center text-muted-foreground py-8">No certificates uploaded yet.</p>
@@ -119,14 +114,10 @@ const EmployeeDashboard = () => {
                       </div>
                       <div className="flex items-center gap-1">
                         <Button variant="ghost" size="icon" asChild title="View">
-                          <a href={getPublicUrl(cert.file_path)} target="_blank" rel="noopener noreferrer">
-                            <Eye className="w-4 h-4" />
-                          </a>
+                          <a href={getPublicUrl(cert.file_path)} target="_blank" rel="noopener noreferrer"><Eye className="w-4 h-4" /></a>
                         </Button>
                         <Button variant="ghost" size="icon" asChild title="Download">
-                          <a href={getPublicUrl(cert.file_path)} download>
-                            <Download className="w-4 h-4" />
-                          </a>
+                          <a href={getPublicUrl(cert.file_path)} download><Download className="w-4 h-4" /></a>
                         </Button>
                       </div>
                     </div>
@@ -143,9 +134,9 @@ const EmployeeDashboard = () => {
     const quickActions = [
       { label: 'My Profile', desc: 'View your information', icon: User, action: () => setView('profile') },
       { label: 'My Certificates', desc: 'View uploaded certificates', icon: FolderOpen, action: () => setView('certificates') },
-      { label: 'My Attendance', desc: 'View attendance records', icon: CalendarCheck, action: () => {} },
-      { label: 'Apply Leave', desc: 'Submit leave request', icon: ClipboardList, action: () => {} },
-      { label: 'Payslips', desc: 'View salary details', icon: DollarSign, action: () => {} },
+      { label: 'My Attendance', desc: 'View attendance records', icon: CalendarCheck, action: () => setView('attendance') },
+      { label: 'Apply Leave', desc: 'Submit leave request', icon: ClipboardList, action: () => setView('leaves') },
+      { label: 'Payslips', desc: 'View salary details', icon: DollarSign, action: () => setView('payslips') },
       { label: 'Resignation', desc: 'Submit resignation', icon: FileText, action: () => {} },
     ];
 
@@ -162,11 +153,7 @@ const EmployeeDashboard = () => {
           <h2 className="text-xl font-semibold text-foreground mb-4">Quick Actions</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {quickActions.map((action) => (
-              <Card
-                key={action.label}
-                className="border-border/60 hover:shadow-md transition-shadow cursor-pointer group"
-                onClick={action.action}
-              >
+              <Card key={action.label} className="border-border/60 hover:shadow-md transition-shadow cursor-pointer group" onClick={action.action}>
                 <CardContent className="p-6 flex items-start gap-4">
                   <div className="w-11 h-11 rounded-xl bg-accent/10 text-accent flex items-center justify-center group-hover:bg-accent group-hover:text-accent-foreground transition-colors">
                     <action.icon className="w-5 h-5" />
@@ -190,9 +177,7 @@ const EmployeeDashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button onClick={() => setView('dashboard')} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-              <div className="w-10 h-10 rounded-xl bg-accent text-accent-foreground flex items-center justify-center font-bold text-sm">
-                WS
-              </div>
+              <div className="w-10 h-10 rounded-xl bg-accent text-accent-foreground flex items-center justify-center font-bold text-sm">WS</div>
               <div>
                 <h1 className="text-lg font-bold text-foreground">WorkSync Employee</h1>
                 <p className="text-xs text-muted-foreground">{user?.email?.split('@')[0]}</p>

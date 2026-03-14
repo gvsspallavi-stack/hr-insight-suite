@@ -101,6 +101,68 @@ export type Database = {
           },
         ]
       }
+      holidays: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      leave_balances: {
+        Row: {
+          casual_leave_total: number
+          casual_leave_used: number
+          created_at: string
+          employee_id: string
+          id: string
+          sick_leave_total: number
+          sick_leave_used: number
+          year: number
+        }
+        Insert: {
+          casual_leave_total?: number
+          casual_leave_used?: number
+          created_at?: string
+          employee_id: string
+          id?: string
+          sick_leave_total?: number
+          sick_leave_used?: number
+          year?: number
+        }
+        Update: {
+          casual_leave_total?: number
+          casual_leave_used?: number
+          created_at?: string
+          employee_id?: string
+          id?: string
+          sick_leave_total?: number
+          sick_leave_used?: number
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leave_balances_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leave_requests: {
         Row: {
           approval_status: string
@@ -110,6 +172,7 @@ export type Database = {
           end_date: string
           id: string
           leave_type: string
+          lop_days: number | null
           reason: string | null
           start_date: string
         }
@@ -121,6 +184,7 @@ export type Database = {
           end_date: string
           id?: string
           leave_type: string
+          lop_days?: number | null
           reason?: string | null
           start_date: string
         }
@@ -132,6 +196,7 @@ export type Database = {
           end_date?: string
           id?: string
           leave_type?: string
+          lop_days?: number | null
           reason?: string | null
           start_date?: string
         }
@@ -201,6 +266,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          base_salary: number | null
           created_at: string
           department: string | null
           designation: string | null
@@ -215,6 +281,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          base_salary?: number | null
           created_at?: string
           department?: string | null
           designation?: string | null
@@ -229,6 +296,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          base_salary?: number | null
           created_at?: string
           department?: string | null
           designation?: string | null
