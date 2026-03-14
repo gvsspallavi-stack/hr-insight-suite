@@ -14,16 +14,317 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      attendance: {
+        Row: {
+          approval_status: string | null
+          approved_by: string | null
+          created_at: string
+          date: string
+          employee_id: string
+          id: string
+          status: string
+        }
+        Insert: {
+          approval_status?: string | null
+          approved_by?: string | null
+          created_at?: string
+          date: string
+          employee_id: string
+          id?: string
+          status: string
+        }
+        Update: {
+          approval_status?: string | null
+          approved_by?: string | null
+          created_at?: string
+          date?: string
+          employee_id?: string
+          id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documents: {
+        Row: {
+          created_at: string
+          document_type: string
+          employee_id: string
+          file_path: string
+          id: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          document_type: string
+          employee_id: string
+          file_path: string
+          id?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          document_type?: string
+          employee_id?: string
+          file_path?: string
+          id?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documents_uploaded_by_fkey"
+            columns: ["uploaded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      leave_requests: {
+        Row: {
+          approval_status: string
+          approved_by: string | null
+          created_at: string
+          employee_id: string
+          end_date: string
+          id: string
+          leave_type: string
+          reason: string | null
+          start_date: string
+        }
+        Insert: {
+          approval_status?: string
+          approved_by?: string | null
+          created_at?: string
+          employee_id: string
+          end_date: string
+          id?: string
+          leave_type: string
+          reason?: string | null
+          start_date: string
+        }
+        Update: {
+          approval_status?: string
+          approved_by?: string | null
+          created_at?: string
+          employee_id?: string
+          end_date?: string
+          id?: string
+          leave_type?: string
+          reason?: string | null
+          start_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leave_requests_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leave_requests_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payroll: {
+        Row: {
+          base_salary: number
+          created_at: string
+          employee_id: string
+          id: string
+          leaves_taken: number
+          lop_days: number
+          month: string
+          net_salary: number
+          tax_deduction: number
+          total_working_days: number
+        }
+        Insert: {
+          base_salary?: number
+          created_at?: string
+          employee_id: string
+          id?: string
+          leaves_taken?: number
+          lop_days?: number
+          month: string
+          net_salary?: number
+          tax_deduction?: number
+          total_working_days?: number
+        }
+        Update: {
+          base_salary?: number
+          created_at?: string
+          employee_id?: string
+          id?: string
+          leaves_taken?: number
+          lop_days?: number
+          month?: string
+          net_salary?: number
+          tax_deduction?: number
+          total_working_days?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payroll_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          department: string | null
+          designation: string | null
+          email: string | null
+          employment_type: string | null
+          full_name: string
+          id: string
+          joining_date: string | null
+          phone: string | null
+          profile_photo: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          department?: string | null
+          designation?: string | null
+          email?: string | null
+          employment_type?: string | null
+          full_name?: string
+          id?: string
+          joining_date?: string | null
+          phone?: string | null
+          profile_photo?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          department?: string | null
+          designation?: string | null
+          email?: string | null
+          employment_type?: string | null
+          full_name?: string
+          id?: string
+          joining_date?: string | null
+          phone?: string | null
+          profile_photo?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      resignations: {
+        Row: {
+          created_at: string
+          director_approval: string | null
+          employee_id: string
+          final_status: string | null
+          hod_approval: string | null
+          id: string
+          principal_approval: string | null
+          resignation_letter: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          director_approval?: string | null
+          employee_id: string
+          final_status?: string | null
+          hod_approval?: string | null
+          id?: string
+          principal_approval?: string | null
+          resignation_letter?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          director_approval?: string | null
+          employee_id?: string
+          final_status?: string | null
+          hod_approval?: string | null
+          id?: string
+          principal_approval?: string | null
+          resignation_letter?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resignations_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_role: {
+        Args: { _user_id: string }
+        Returns: Database["public"]["Enums"]["app_role"]
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "employee"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +451,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "employee"],
+    },
   },
 } as const
