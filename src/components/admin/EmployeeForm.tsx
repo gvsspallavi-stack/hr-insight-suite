@@ -168,6 +168,8 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
                     placeholder="Min 6 characters"
                     required
                     minLength={6}
+                    autoComplete="new-password"
+                    data-lpignore="true"
                   />
                 </div>
               </div>
