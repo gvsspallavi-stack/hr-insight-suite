@@ -74,7 +74,7 @@ const AttendanceManager = ({ onBack }: AttendanceManagerProps) => {
     const leaveEmpIds = leaveRequests.map((l: any) => l.employee_id);
     if (leaveEmpIds.includes(empId)) return 'leave';
     const record = attendance.find((a: any) => a.employee_id === empId);
-    return record?.status || 'absent';
+    return record?.status || 'not marked';
   };
 
   const markAttendance = async (empId: string, status: string) => {
