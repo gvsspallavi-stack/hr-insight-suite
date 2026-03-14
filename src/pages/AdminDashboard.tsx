@@ -1,11 +1,31 @@
+import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Navigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, CalendarCheck, FileText, DollarSign, LogOut, BarChart3, ClipboardList, FolderOpen } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { Users, CalendarCheck, ClipboardList, DollarSign, LogOut, FolderOpen, BarChart3 } from 'lucide-react';
+import EmployeeList from '@/components/admin/EmployeeList';
+import EmployeeForm from '@/components/admin/EmployeeForm';
+import CertificateManager from '@/components/admin/CertificateManager';
+import type { Tables } from '@/integrations/supabase/types';
+
+type Profile = Tables<'profiles'>;
+type View = 'dashboard' | 'employees' | 'add' | 'edit' | 'certificates';
 
 const AdminDashboard = () => {
   const { role, user, loading, signOut } = useAuth();
+  const [view, setView] = useState<View>('dashboard');
+  const [selectedEmployee, setSelectedEmployee] = useState<Profile | null>(null);
+
+  const { data: employeeCount = 0 } = useQuery({
+    queryKey: ['employee-count'],
+    queryFn: async () => {
+      const { count } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
+      return count || 0;
+    },
+  });
 
   if (loading) {
     return (
@@ -18,34 +38,101 @@ const AdminDashboard = () => {
   if (role !== 'admin') return <Navigate to="/auth" replace />;
 
   const stats = [
-    { label: 'Total Employees', value: '—', icon: Users, color: 'text-primary' },
+    { label: 'Total Employees', value: String(employeeCount), icon: Users, color: 'text-primary' },
     { label: 'Present Today', value: '—', icon: CalendarCheck, color: 'text-accent' },
-    { label: 'Pending Leaves', value: '—', icon: ClipboardList, color: 'hsl(var(--warning))' },
-    { label: 'Monthly Payroll', value: '—', icon: DollarSign, color: 'hsl(var(--success))' },
+    { label: 'Pending Leaves', value: '—', icon: ClipboardList, color: 'text-warning' },
+    { label: 'Monthly Payroll', value: '—', icon: DollarSign, color: 'text-success' },
   ];
 
   const modules = [
-    { label: 'Employees', desc: 'Manage employee profiles', icon: Users },
-    { label: 'Attendance', desc: 'Track daily attendance', icon: CalendarCheck },
-    { label: 'Leave Requests', desc: 'Approve or reject leaves', icon: ClipboardList },
-    { label: 'Payroll', desc: 'Generate salary slips', icon: DollarSign },
-    { label: 'Documents', desc: 'Upload & manage files', icon: FolderOpen },
-    { label: 'Analytics', desc: 'View reports & charts', icon: BarChart3 },
+    { label: 'Employees', desc: 'Manage employee profiles', icon: Users, action: () => setView('employees') },
+    { label: 'Attendance', desc: 'Track daily attendance', icon: CalendarCheck, action: () => {} },
+    { label: 'Leave Requests', desc: 'Approve or reject leaves', icon: ClipboardList, action: () => {} },
+    { label: 'Payroll', desc: 'Generate salary slips', icon: DollarSign, action: () => {} },
+    { label: 'Documents', desc: 'Upload & manage files', icon: FolderOpen, action: () => {} },
+    { label: 'Analytics', desc: 'View reports & charts', icon: BarChart3, action: () => {} },
   ];
+
+  const renderContent = () => {
+    switch (view) {
+      case 'employees':
+        return (
+          <EmployeeList
+            onAdd={() => { setSelectedEmployee(null); setView('add'); }}
+            onEdit={(emp) => { setSelectedEmployee(emp); setView('edit'); }}
+            onCertificates={(emp) => { setSelectedEmployee(emp); setView('certificates'); }}
+          />
+        );
+      case 'add':
+        return <EmployeeForm onBack={() => setView('employees')} />;
+      case 'edit':
+        return <EmployeeForm employee={selectedEmployee} onBack={() => setView('employees')} />;
+      case 'certificates':
+        return selectedEmployee ? (
+          <CertificateManager employee={selectedEmployee} onBack={() => setView('employees')} />
+        ) : null;
+      default:
+        return (
+          <div className="space-y-8">
+            {/* Stats */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {stats.map((stat) => (
+                <Card key={stat.label} className="border-border/60">
+                  <CardContent className="p-5 flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
+                      <stat.icon className={`w-6 h-6 ${stat.color}`} />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+                      <p className="text-sm text-muted-foreground">{stat.label}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Modules */}
+            <div>
+              <h2 className="text-xl font-semibold text-foreground mb-4">Modules</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {modules.map((mod) => (
+                  <Card
+                    key={mod.label}
+                    className="border-border/60 hover:shadow-md transition-shadow cursor-pointer group"
+                    onClick={mod.action}
+                  >
+                    <CardContent className="p-6 flex items-start gap-4">
+                      <div className="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                        <mod.icon className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-foreground">{mod.label}</h3>
+                        <p className="text-sm text-muted-foreground">{mod.desc}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <header className="sticky top-0 z-50 bg-card border-b border-border shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
-              WS
-            </div>
-            <div>
-              <h1 className="text-lg font-bold text-foreground">WorkSync Admin</h1>
-              <p className="text-xs text-muted-foreground">{user?.email}</p>
-            </div>
+            <button onClick={() => setView('dashboard')} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+              <div className="w-10 h-10 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
+                WS
+              </div>
+              <div>
+                <h1 className="text-lg font-bold text-foreground">WorkSync Admin</h1>
+                <p className="text-xs text-muted-foreground">{user?.email?.split('@')[0]}</p>
+              </div>
+            </button>
           </div>
           <Button variant="outline" size="sm" onClick={signOut}>
             <LogOut className="w-4 h-4 mr-2" /> Sign Out
@@ -53,43 +140,8 @@ const AdminDashboard = () => {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
-        {/* Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {stats.map((stat) => (
-            <Card key={stat.label} className="border-border/60">
-              <CardContent className="p-5 flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
-                  <stat.icon className="w-6 h-6" style={{ color: stat.color.startsWith('hsl') ? stat.color : undefined }} />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-                  <p className="text-sm text-muted-foreground">{stat.label}</p>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Modules */}
-        <div>
-          <h2 className="text-xl font-semibold text-foreground mb-4">Modules</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {modules.map((mod) => (
-              <Card key={mod.label} className="border-border/60 hover:shadow-md transition-shadow cursor-pointer group">
-                <CardContent className="p-6 flex items-start gap-4">
-                  <div className="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                    <mod.icon className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground">{mod.label}</h3>
-                    <p className="text-sm text-muted-foreground">{mod.desc}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+        {renderContent()}
       </main>
     </div>
   );
