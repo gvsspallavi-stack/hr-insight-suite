@@ -184,7 +184,7 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="phone">Phone</Label>
-                <Input id="phone" value={form.phone} onChange={(e) => handleChange('phone', e.target.value)} placeholder="+91 98765 43210" />
+                <Input id="phone" value={form.phone} onChange={(e) => { const val = e.target.value.replace(/\D/g, '').slice(0, 10); handleChange('phone', val); }} placeholder="9876543210" maxLength={10} inputMode="numeric" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="department">Department</Label>
