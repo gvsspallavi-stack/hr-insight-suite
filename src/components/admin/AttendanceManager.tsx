@@ -155,12 +155,16 @@ const AttendanceManager = ({ onBack }: AttendanceManagerProps) => {
                     </div>
                     <div className="flex items-center gap-2">
                       <Badge className={statusColors[status] || 'bg-muted text-muted-foreground'}>
-                        {status.charAt(0).toUpperCase() + status.slice(1)}
+                        {status === 'not marked' ? 'Not Marked' : status.charAt(0).toUpperCase() + status.slice(1)}
                       </Badge>
                       {!isHoliday && !isSunday && status !== 'leave' && (
                         <div className="flex gap-1">
-                          <Button size="sm" variant={status === 'present' ? 'default' : 'outline'} className="text-xs h-7 px-2" onClick={() => markAttendance(emp.id, 'present')}>P</Button>
-                          <Button size="sm" variant={status === 'absent' ? 'destructive' : 'outline'} className="text-xs h-7 px-2" onClick={() => markAttendance(emp.id, 'absent')}>A</Button>
+                          <Button size="sm" variant={status === 'present' ? 'default' : 'outline'} className="text-xs h-7 px-3" onClick={() => markAttendance(emp.id, 'present')}>
+                            ✅ Present
+                          </Button>
+                          <Button size="sm" variant={status === 'absent' ? 'destructive' : 'outline'} className="text-xs h-7 px-3" onClick={() => markAttendance(emp.id, 'absent')}>
+                            ❌ Absent
+                          </Button>
                         </div>
                       )}
                     </div>
