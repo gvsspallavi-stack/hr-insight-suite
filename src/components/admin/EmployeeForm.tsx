@@ -71,7 +71,8 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
             designation: form.designation,
             employment_type: form.employment_type,
             joining_date: form.joining_date || null,
-          })
+            base_salary: Number(form.base_salary) || 0,
+          } as any)
           .eq('id', employee.id);
 
         if (error) throw error;
