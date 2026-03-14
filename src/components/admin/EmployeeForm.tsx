@@ -94,16 +94,17 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
 
         if (signUpError) throw signUpError;
 
-        // Wait for profile to be created by trigger, then update it
-        if (signUpData.user) {
-          // Small delay to let trigger execute
-          await new Promise((r) => setTimeout(r, 1500));
-
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('id')
-            .eq('user_id', signUpData.user.id)
-            .single();
+          // Retry a few times to wait for trigger
+          let profile = null;
+          for (let i = 0; i < 5; i++) {
+            await new Promise((r) => setTimeout(r, 1000));
+            const { data } = await supabase
+              .from('profiles')
+              .select('id')
+              .eq('user_id', signUpData.user.id)
+              .single();
+            if (data) { profile = data; break; }
+          }
 
           if (profile) {
             await supabase
