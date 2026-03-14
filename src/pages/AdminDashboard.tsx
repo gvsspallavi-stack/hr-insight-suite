@@ -5,25 +5,56 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Users, CalendarCheck, ClipboardList, DollarSign, LogOut, FolderOpen, BarChart3 } from 'lucide-react';
+import { Users, CalendarCheck, ClipboardList, DollarSign, LogOut, FolderOpen, BarChart3, Calendar } from 'lucide-react';
 import EmployeeList from '@/components/admin/EmployeeList';
 import EmployeeForm from '@/components/admin/EmployeeForm';
 import CertificateManager from '@/components/admin/CertificateManager';
+import AttendanceManager from '@/components/admin/AttendanceManager';
+import LeaveManager from '@/components/admin/LeaveManager';
+import PayrollManager from '@/components/admin/PayrollManager';
+import HolidayManager from '@/components/admin/HolidayManager';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Profile = Tables<'profiles'>;
-type View = 'dashboard' | 'employees' | 'add' | 'edit' | 'certificates';
+type View = 'dashboard' | 'employees' | 'add' | 'edit' | 'certificates' | 'attendance' | 'leaves' | 'payroll' | 'documents' | 'holidays';
 
 const AdminDashboard = () => {
   const { role, user, loading, signOut } = useAuth();
   const [view, setView] = useState<View>('dashboard');
   const [selectedEmployee, setSelectedEmployee] = useState<Profile | null>(null);
 
+  const today = new Date().toISOString().split('T')[0];
+  const currentMonth = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
+
   const { data: employeeCount = 0 } = useQuery({
     queryKey: ['employee-count'],
     queryFn: async () => {
       const { count } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
       return count || 0;
+    },
+  });
+
+  const { data: presentToday = 0 } = useQuery({
+    queryKey: ['present-today', today],
+    queryFn: async () => {
+      const { count } = await supabase.from('attendance').select('*', { count: 'exact', head: true }).eq('date', today).eq('status', 'present');
+      return count || 0;
+    },
+  });
+
+  const { data: pendingLeaves = 0 } = useQuery({
+    queryKey: ['pending-leaves-count'],
+    queryFn: async () => {
+      const { count } = await supabase.from('leave_requests').select('*', { count: 'exact', head: true }).eq('approval_status', 'pending');
+      return count || 0;
+    },
+  });
+
+  const { data: monthlyPayroll = 0 } = useQuery({
+    queryKey: ['monthly-payroll', currentMonth],
+    queryFn: async () => {
+      const { data } = await supabase.from('payroll').select('net_salary').eq('month', currentMonth);
+      return data?.reduce((sum: number, p: any) => sum + Number(p.net_salary), 0) || 0;
     },
   });
 
@@ -39,18 +70,18 @@ const AdminDashboard = () => {
 
   const stats = [
     { label: 'Total Employees', value: String(employeeCount), icon: Users, color: 'text-primary' },
-    { label: 'Present Today', value: '—', icon: CalendarCheck, color: 'text-accent' },
-    { label: 'Pending Leaves', value: '—', icon: ClipboardList, color: 'text-warning' },
-    { label: 'Monthly Payroll', value: '—', icon: DollarSign, color: 'text-success' },
+    { label: 'Present Today', value: String(presentToday), icon: CalendarCheck, color: 'text-accent' },
+    { label: 'Pending Leaves', value: String(pendingLeaves), icon: ClipboardList, color: 'text-warning' },
+    { label: 'Monthly Payroll', value: `₹${Number(monthlyPayroll).toLocaleString()}`, icon: DollarSign, color: 'text-success' },
   ];
 
   const modules = [
     { label: 'Employees', desc: 'Manage employee profiles', icon: Users, action: () => setView('employees') },
-    { label: 'Attendance', desc: 'Track daily attendance', icon: CalendarCheck, action: () => {} },
-    { label: 'Leave Requests', desc: 'Approve or reject leaves', icon: ClipboardList, action: () => {} },
-    { label: 'Payroll', desc: 'Generate salary slips', icon: DollarSign, action: () => {} },
-    { label: 'Documents', desc: 'Upload & manage files', icon: FolderOpen, action: () => {} },
-    { label: 'Analytics', desc: 'View reports & charts', icon: BarChart3, action: () => {} },
+    { label: 'Attendance', desc: 'Track daily attendance', icon: CalendarCheck, action: () => setView('attendance') },
+    { label: 'Leave Requests', desc: 'Approve or reject leaves', icon: ClipboardList, action: () => setView('leaves') },
+    { label: 'Payroll', desc: 'Generate salary slips', icon: DollarSign, action: () => setView('payroll') },
+    { label: 'Holidays', desc: 'Manage holiday calendar', icon: Calendar, action: () => setView('holidays') },
+    { label: 'Documents', desc: 'Upload & manage files', icon: FolderOpen, action: () => setView('employees') },
   ];
 
   const renderContent = () => {
@@ -71,10 +102,17 @@ const AdminDashboard = () => {
         return selectedEmployee ? (
           <CertificateManager employee={selectedEmployee} onBack={() => setView('employees')} />
         ) : null;
+      case 'attendance':
+        return <AttendanceManager onBack={() => setView('dashboard')} />;
+      case 'leaves':
+        return <LeaveManager onBack={() => setView('dashboard')} />;
+      case 'payroll':
+        return <PayrollManager onBack={() => setView('dashboard')} />;
+      case 'holidays':
+        return <HolidayManager onBack={() => setView('dashboard')} />;
       default:
         return (
           <div className="space-y-8">
-            {/* Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {stats.map((stat) => (
                 <Card key={stat.label} className="border-border/60">
@@ -91,7 +129,6 @@ const AdminDashboard = () => {
               ))}
             </div>
 
-            {/* Modules */}
             <div>
               <h2 className="text-xl font-semibold text-foreground mb-4">Modules</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
