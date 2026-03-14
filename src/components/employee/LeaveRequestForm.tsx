@@ -123,7 +123,7 @@ const LeaveRequestForm = ({ onBack }: LeaveRequestFormProps) => {
                 <Select value={leaveType} onValueChange={setLeaveType}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="casual">Casual Leave ({casualRemaining} left)</SelectItem>
+                    <SelectItem value="casual">CL - Monthly Leave ({casualRemaining} left)</SelectItem>
                     <SelectItem value="sick">Sick Leave ({sickRemaining} left)</SelectItem>
                     <SelectItem value="other">Other (LOP)</SelectItem>
                   </SelectContent>
