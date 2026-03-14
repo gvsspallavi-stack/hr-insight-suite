@@ -49,11 +49,11 @@ const Auth = () => {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    const { error } = await signUp(userId, password, fullName, selectedRole);
+    const { error } = await signUp(toEmail(userId), password, fullName, selectedRole);
     if (error) {
       toast.error(error.message);
     } else {
-      toast.success('Account created! Check your email to confirm.');
+      toast.success('Account created successfully! You can now sign in.');
     }
     setSubmitting(false);
   };
