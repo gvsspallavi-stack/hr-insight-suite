@@ -121,9 +121,16 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
                 designation: form.designation,
                 employment_type: form.employment_type,
                 joining_date: form.joining_date || null,
-              })
+                base_salary: Number(form.base_salary) || 0,
+              } as any)
               .eq('id', profile.id);
             if (updateError) console.error('Profile update error:', updateError);
+
+            // Create leave balance for current year
+            await supabase.from('leave_balances').insert({
+              employee_id: profile.id,
+              year: new Date().getFullYear(),
+            } as any).single();
           } else {
             console.error('Profile not found after signup');
           }
