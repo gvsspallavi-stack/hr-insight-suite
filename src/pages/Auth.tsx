@@ -32,10 +32,12 @@ const Auth = () => {
     return <Navigate to={role === 'admin' ? '/admin' : '/employee'} replace />;
   }
 
+  const toEmail = (id: string) => `${id.trim().toLowerCase()}@worksync.app`;
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    const { error } = await signIn(userId, password);
+    const { error } = await signIn(toEmail(userId), password);
     if (error) {
       toast.error(error.message);
     } else {
@@ -47,11 +49,11 @@ const Auth = () => {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    const { error } = await signUp(userId, password, fullName, selectedRole);
+    const { error } = await signUp(toEmail(userId), password, fullName, selectedRole);
     if (error) {
       toast.error(error.message);
     } else {
-      toast.success('Account created! Check your email to confirm.');
+      toast.success('Account created successfully! You can now sign in.');
     }
     setSubmitting(false);
   };
@@ -163,10 +165,10 @@ const Auth = () => {
                 <Label htmlFor="userId">{isAdmin ? 'Admin ID' : 'Employee ID'}</Label>
                 <Input
                   id="userId"
-                  type="email"
+                  type="text"
                   value={userId}
                   onChange={(e) => setUserId(e.target.value)}
-                  placeholder={isAdmin ? 'admin@worksync.com' : 'emp001@worksync.com'}
+                  placeholder={isAdmin ? 'admin01' : 'emp001'}
                   required
                 />
               </div>
