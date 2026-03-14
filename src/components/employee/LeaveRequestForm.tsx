@@ -137,8 +137,8 @@ const LeaveRequestForm = ({ onBack }: LeaveRequestFormProps) => {
               </div>
             </div>
             <div className="space-y-1">
-              <Label>Reason</Label>
-              <Textarea value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Optional reason..." />
+              <Label>Reason / Purpose <span className="text-destructive">*</span></Label>
+              <Textarea value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Purpose of leave (required)..." required />
             </div>
             <Button type="submit" disabled={submitting}>
               <Send className="w-4 h-4 mr-1" /> Submit Request
