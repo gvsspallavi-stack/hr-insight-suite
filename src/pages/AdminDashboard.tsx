@@ -39,11 +39,11 @@ const AdminDashboard = () => {
       <header className="sticky top-0 z-50 bg-card border-b border-border shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg">
-              HR
+            <div className="w-10 h-10 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
+              WS
             </div>
             <div>
-              <h1 className="text-lg font-bold text-foreground">Admin Dashboard</h1>
+              <h1 className="text-lg font-bold text-foreground">WorkSync Admin</h1>
               <p className="text-xs text-muted-foreground">{user?.email}</p>
             </div>
           </div>
