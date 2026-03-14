@@ -29,6 +29,7 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
     designation: '',
     employment_type: 'full-time',
     joining_date: '',
+    base_salary: '',
   });
   const [password, setPassword] = useState('');
   const [employeeId, setEmployeeId] = useState('');
