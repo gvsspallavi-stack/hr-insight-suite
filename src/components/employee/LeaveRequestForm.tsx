@@ -94,14 +94,16 @@ const LeaveRequestForm = ({ onBack }: LeaveRequestFormProps) => {
       <div className="grid grid-cols-2 gap-4">
         <Card>
           <CardContent className="p-4 text-center">
-            <p className="text-2xl font-bold text-foreground">{sickRemaining}</p>
-            <p className="text-sm text-muted-foreground">Sick Leave Remaining</p>
+            <p className="text-2xl font-bold text-foreground">{casualRemaining}</p>
+            <p className="text-sm text-muted-foreground">CL Remaining (Monthly)</p>
+            <p className="text-xs text-muted-foreground mt-1">1/month, carries forward</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <p className="text-2xl font-bold text-foreground">{casualRemaining}</p>
-            <p className="text-sm text-muted-foreground">Casual Leave Remaining</p>
+            <p className="text-2xl font-bold text-foreground">{sickRemaining}</p>
+            <p className="text-sm text-muted-foreground">Sick Leave Remaining</p>
+            <p className="text-xs text-muted-foreground mt-1">12/year, use anytime</p>
           </CardContent>
         </Card>
       </div>
