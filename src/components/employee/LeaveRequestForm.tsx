@@ -76,7 +76,10 @@ const LeaveRequestForm = ({ onBack }: LeaveRequestFormProps) => {
   };
 
   const sickRemaining = balance ? balance.sick_leave_total - balance.sick_leave_used : 12;
-  const casualRemaining = balance ? balance.casual_leave_total - balance.casual_leave_used : 12;
+  // CL: 1 per month, carries forward. Accrued = months elapsed so far
+  const currentMonth = new Date().getMonth() + 1;
+  const clAccrued = balance ? Math.min(currentMonth, balance.casual_leave_total) : currentMonth;
+  const casualRemaining = balance ? clAccrued - balance.casual_leave_used : clAccrued;
 
   const statusColors: Record<string, string> = {
     pending: 'bg-warning text-warning-foreground',
