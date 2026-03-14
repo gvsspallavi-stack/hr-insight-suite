@@ -75,8 +75,8 @@ const LeaveRequestForm = ({ onBack }: LeaveRequestFormProps) => {
     setSubmitting(false);
   };
 
-  const sickRemaining = balance ? balance.sick_leave_total - balance.sick_leave_used : 10;
-  const casualRemaining = balance ? balance.casual_leave_total - balance.casual_leave_used : 8;
+  const sickRemaining = balance ? balance.sick_leave_total - balance.sick_leave_used : 12;
+  const casualRemaining = balance ? balance.casual_leave_total - balance.casual_leave_used : 12;
 
   const statusColors: Record<string, string> = {
     pending: 'bg-warning text-warning-foreground',

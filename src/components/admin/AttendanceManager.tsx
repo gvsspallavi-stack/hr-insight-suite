@@ -17,6 +17,7 @@ const statusColors: Record<string, string> = {
   absent: 'bg-destructive text-destructive-foreground',
   leave: 'bg-warning text-warning-foreground',
   holiday: 'bg-primary text-primary-foreground',
+  'not marked': 'bg-muted text-muted-foreground',
 };
 
 const AttendanceManager = ({ onBack }: AttendanceManagerProps) => {
