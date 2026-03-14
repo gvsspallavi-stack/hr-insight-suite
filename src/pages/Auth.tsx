@@ -32,24 +32,40 @@ const Auth = () => {
     return <Navigate to={role === 'admin' ? '/admin' : '/employee'} replace />;
   }
 
-  const toEmail = (id: string) => `${id.trim().toLowerCase()}@worksync.app`;
+  const toSignupEmail = (id: string) => {
+    const normalized = id.trim().toLowerCase();
+    return normalized.includes('@') ? normalized : `${normalized}@worksync.app`;
+  };
+
+  const loginEmailCandidates = (id: string) => {
+    const normalized = id.trim().toLowerCase();
+    if (normalized.includes('@')) return [normalized];
+    return [`${normalized}@worksync.app`, `${normalized}@worksync.com`];
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    const { error } = await signIn(toEmail(userId), password);
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success('Logged in successfully!');
+
+    let lastError: { message: string } | null = null;
+    for (const email of loginEmailCandidates(userId)) {
+      const { error } = await signIn(email, password);
+      if (!error) {
+        toast.success('Logged in successfully!');
+        setSubmitting(false);
+        return;
+      }
+      lastError = error;
     }
+
+    toast.error(lastError?.message || 'Invalid login credentials');
     setSubmitting(false);
   };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    const { error } = await signUp(toEmail(userId), password, fullName, selectedRole);
+    const { error } = await signUp(toSignupEmail(userId), password, fullName, selectedRole);
     if (error) {
       toast.error(error.message);
     } else {
