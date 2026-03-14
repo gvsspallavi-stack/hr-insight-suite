@@ -45,6 +45,7 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
         designation: employee.designation || '',
         employment_type: employee.employment_type || 'full-time',
         joining_date: employee.joining_date || '',
+        base_salary: String((employee as any).base_salary || ''),
       });
     }
   }, [employee]);
