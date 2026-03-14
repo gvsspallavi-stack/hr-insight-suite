@@ -107,7 +107,7 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
           }
 
           if (profile) {
-            await supabase
+            const { error: updateError } = await supabase
               .from('profiles')
               .update({
                 full_name: form.full_name,
@@ -119,6 +119,9 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
                 joining_date: form.joining_date || null,
               })
               .eq('id', profile.id);
+            if (updateError) console.error('Profile update error:', updateError);
+          } else {
+            console.error('Profile not found after signup');
           }
         }
 
