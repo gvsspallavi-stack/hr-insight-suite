@@ -75,8 +75,8 @@ const LeaveRequestForm = ({ onBack }: LeaveRequestFormProps) => {
     setSubmitting(false);
   };
 
-  const sickRemaining = balance ? balance.sick_leave_total - balance.sick_leave_used : 10;
-  const casualRemaining = balance ? balance.casual_leave_total - balance.casual_leave_used : 8;
+  const sickRemaining = balance ? balance.sick_leave_total - balance.sick_leave_used : 12;
+  const casualRemaining = balance ? balance.casual_leave_total - balance.casual_leave_used : 12;
 
   const statusColors: Record<string, string> = {
     pending: 'bg-warning text-warning-foreground',
@@ -137,8 +137,8 @@ const LeaveRequestForm = ({ onBack }: LeaveRequestFormProps) => {
               </div>
             </div>
             <div className="space-y-1">
-              <Label>Reason</Label>
-              <Textarea value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Optional reason..." />
+              <Label>Reason / Purpose <span className="text-destructive">*</span></Label>
+              <Textarea value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Purpose of leave (required)..." required />
             </div>
             <Button type="submit" disabled={submitting}>
               <Send className="w-4 h-4 mr-1" /> Submit Request

@@ -17,6 +17,7 @@ const statusColors: Record<string, string> = {
   absent: 'bg-destructive text-destructive-foreground',
   leave: 'bg-warning text-warning-foreground',
   holiday: 'bg-primary text-primary-foreground',
+  'not marked': 'bg-muted text-muted-foreground',
 };
 
 const AttendanceManager = ({ onBack }: AttendanceManagerProps) => {
@@ -74,7 +75,7 @@ const AttendanceManager = ({ onBack }: AttendanceManagerProps) => {
     const leaveEmpIds = leaveRequests.map((l: any) => l.employee_id);
     if (leaveEmpIds.includes(empId)) return 'leave';
     const record = attendance.find((a: any) => a.employee_id === empId);
-    return record?.status || 'absent';
+    return record?.status || 'not marked';
   };
 
   const markAttendance = async (empId: string, status: string) => {
@@ -155,12 +156,16 @@ const AttendanceManager = ({ onBack }: AttendanceManagerProps) => {
                     </div>
                     <div className="flex items-center gap-2">
                       <Badge className={statusColors[status] || 'bg-muted text-muted-foreground'}>
-                        {status.charAt(0).toUpperCase() + status.slice(1)}
+                        {status === 'not marked' ? 'Not Marked' : status.charAt(0).toUpperCase() + status.slice(1)}
                       </Badge>
                       {!isHoliday && !isSunday && status !== 'leave' && (
                         <div className="flex gap-1">
-                          <Button size="sm" variant={status === 'present' ? 'default' : 'outline'} className="text-xs h-7 px-2" onClick={() => markAttendance(emp.id, 'present')}>P</Button>
-                          <Button size="sm" variant={status === 'absent' ? 'destructive' : 'outline'} className="text-xs h-7 px-2" onClick={() => markAttendance(emp.id, 'absent')}>A</Button>
+                          <Button size="sm" variant={status === 'present' ? 'default' : 'outline'} className="text-xs h-7 px-3" onClick={() => markAttendance(emp.id, 'present')}>
+                            ✅ Present
+                          </Button>
+                          <Button size="sm" variant={status === 'absent' ? 'destructive' : 'outline'} className="text-xs h-7 px-3" onClick={() => markAttendance(emp.id, 'absent')}>
+                            ❌ Absent
+                          </Button>
                         </div>
                       )}
                     </div>
