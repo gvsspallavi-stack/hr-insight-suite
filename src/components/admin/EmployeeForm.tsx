@@ -229,6 +229,10 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
                 <Label htmlFor="joining_date">Joining Date</Label>
                 <Input id="joining_date" type="date" value={form.joining_date} onChange={(e) => handleChange('joining_date', e.target.value)} />
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="base_salary">Monthly Salary (₹)</Label>
+                <Input id="base_salary" type="number" value={form.base_salary} onChange={(e) => handleChange('base_salary', e.target.value)} placeholder="e.g. 50000" min={0} />
+              </div>
             </div>
 
             <div className="flex justify-end pt-2">
