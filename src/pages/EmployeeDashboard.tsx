@@ -156,6 +156,7 @@ const EmployeeDashboard = () => {
             <h2 className="text-2xl font-bold">Welcome, {profile?.full_name || 'Employee'}!</h2>
             <p className="text-primary-foreground/80 mt-1">{profile?.department ? `${profile.department} — ${profile.designation || 'Employee'}` : 'Your employee portal'}</p>
           </CardContent>
+        </Card>
 
         <div>
           <h2 className="text-xl font-semibold text-foreground mb-4">Quick Actions</h2>
