@@ -32,10 +32,12 @@ const Auth = () => {
     return <Navigate to={role === 'admin' ? '/admin' : '/employee'} replace />;
   }
 
+  const toEmail = (id: string) => `${id.trim().toLowerCase()}@worksync.app`;
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    const { error } = await signIn(userId, password);
+    const { error } = await signIn(toEmail(userId), password);
     if (error) {
       toast.error(error.message);
     } else {
