@@ -165,10 +165,10 @@ const Auth = () => {
                 <Label htmlFor="userId">{isAdmin ? 'Admin ID' : 'Employee ID'}</Label>
                 <Input
                   id="userId"
-                  type="email"
+                  type="text"
                   value={userId}
                   onChange={(e) => setUserId(e.target.value)}
-                  placeholder={isAdmin ? 'admin@worksync.com' : 'emp001@worksync.com'}
+                  placeholder={isAdmin ? 'admin01' : 'emp001'}
                   required
                 />
               </div>
