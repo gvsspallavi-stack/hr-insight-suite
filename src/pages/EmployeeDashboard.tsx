@@ -10,8 +10,9 @@ import { CalendarCheck, FileText, DollarSign, LogOut, ClipboardList, FolderOpen,
 import MyAttendance from '@/components/employee/MyAttendance';
 import LeaveRequestForm from '@/components/employee/LeaveRequestForm';
 import MyPayslips from '@/components/employee/MyPayslips';
+import ResignationForm from '@/components/employee/ResignationForm';
 
-type View = 'dashboard' | 'profile' | 'certificates' | 'attendance' | 'leaves' | 'payslips';
+type View = 'dashboard' | 'profile' | 'certificates' | 'attendance' | 'leaves' | 'payslips' | 'resignation';
 
 const EmployeeDashboard = () => {
   const { role, user, profileId, loading, signOut } = useAuth();
