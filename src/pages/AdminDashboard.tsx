@@ -13,10 +13,11 @@ import AttendanceManager from '@/components/admin/AttendanceManager';
 import LeaveManager from '@/components/admin/LeaveManager';
 import PayrollManager from '@/components/admin/PayrollManager';
 import HolidayManager from '@/components/admin/HolidayManager';
+import ResignationManager from '@/components/admin/ResignationManager';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Profile = Tables<'profiles'>;
-type View = 'dashboard' | 'employees' | 'add' | 'edit' | 'certificates' | 'attendance' | 'leaves' | 'payroll' | 'documents' | 'holidays';
+type View = 'dashboard' | 'employees' | 'add' | 'edit' | 'certificates' | 'attendance' | 'leaves' | 'payroll' | 'documents' | 'holidays' | 'resignations';
 
 const AdminDashboard = () => {
   const { role, user, loading, signOut } = useAuth();
