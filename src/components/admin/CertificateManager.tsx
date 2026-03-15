@@ -86,6 +86,22 @@ const CertificateManager = ({ employee, onBack }: CertificateManagerProps) => {
     return data.publicUrl;
   };
 
+  const handleView = (path: string) => {
+    const url = getPublicUrl(path);
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleDownload = async (path: string, docType: string) => {
+    const { data, error } = await supabase.storage.from('certificates').download(path);
+    if (error || !data) { toast.error('Download failed'); return; }
+    const url = URL.createObjectURL(data);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = docType + '.' + path.split('.').pop();
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-4">
       <button onClick={onBack} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
