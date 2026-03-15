@@ -10,8 +10,9 @@ import { CalendarCheck, FileText, DollarSign, LogOut, ClipboardList, FolderOpen,
 import MyAttendance from '@/components/employee/MyAttendance';
 import LeaveRequestForm from '@/components/employee/LeaveRequestForm';
 import MyPayslips from '@/components/employee/MyPayslips';
+import ResignationForm from '@/components/employee/ResignationForm';
 
-type View = 'dashboard' | 'profile' | 'certificates' | 'attendance' | 'leaves' | 'payslips';
+type View = 'dashboard' | 'profile' | 'certificates' | 'attendance' | 'leaves' | 'payslips' | 'resignation';
 
 const EmployeeDashboard = () => {
   const { role, user, profileId, loading, signOut } = useAuth();
@@ -56,6 +57,7 @@ const EmployeeDashboard = () => {
     if (view === 'attendance') return <MyAttendance onBack={() => setView('dashboard')} />;
     if (view === 'leaves') return <LeaveRequestForm onBack={() => setView('dashboard')} />;
     if (view === 'payslips') return <MyPayslips onBack={() => setView('dashboard')} />;
+    if (view === 'resignation') return <ResignationForm onBack={() => setView('dashboard')} />;
 
     if (view === 'profile' && profile) {
       const fields = [
@@ -137,7 +139,7 @@ const EmployeeDashboard = () => {
       { label: 'My Attendance', desc: 'View attendance records', icon: CalendarCheck, action: () => setView('attendance') },
       { label: 'Apply Leave', desc: 'Submit leave request', icon: ClipboardList, action: () => setView('leaves') },
       { label: 'Payslips', desc: 'View salary details', icon: DollarSign, action: () => setView('payslips') },
-      { label: 'Resignation', desc: 'Submit resignation', icon: FileText, action: () => {} },
+      { label: 'Resignation', desc: 'Submit resignation', icon: FileText, action: () => setView('resignation') },
     ];
 
     return (

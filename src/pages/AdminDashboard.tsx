@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Users, CalendarCheck, ClipboardList, DollarSign, LogOut, FolderOpen, BarChart3, Calendar } from 'lucide-react';
+import { Users, CalendarCheck, ClipboardList, DollarSign, LogOut, FolderOpen, BarChart3, Calendar, FileText } from 'lucide-react';
 import EmployeeList from '@/components/admin/EmployeeList';
 import EmployeeForm from '@/components/admin/EmployeeForm';
 import CertificateManager from '@/components/admin/CertificateManager';
@@ -13,10 +13,11 @@ import AttendanceManager from '@/components/admin/AttendanceManager';
 import LeaveManager from '@/components/admin/LeaveManager';
 import PayrollManager from '@/components/admin/PayrollManager';
 import HolidayManager from '@/components/admin/HolidayManager';
+import ResignationManager from '@/components/admin/ResignationManager';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Profile = Tables<'profiles'>;
-type View = 'dashboard' | 'employees' | 'add' | 'edit' | 'certificates' | 'attendance' | 'leaves' | 'payroll' | 'documents' | 'holidays';
+type View = 'dashboard' | 'employees' | 'add' | 'edit' | 'certificates' | 'attendance' | 'leaves' | 'payroll' | 'documents' | 'holidays' | 'resignations';
 
 const AdminDashboard = () => {
   const { role, user, loading, signOut } = useAuth();
@@ -82,6 +83,7 @@ const AdminDashboard = () => {
     { label: 'Payroll', desc: 'Generate salary slips', icon: DollarSign, action: () => setView('payroll') },
     { label: 'Holidays', desc: 'Manage holiday calendar', icon: Calendar, action: () => setView('holidays') },
     { label: 'Documents', desc: 'Upload & manage files', icon: FolderOpen, action: () => setView('employees') },
+    { label: 'Resignations', desc: 'Manage resignation requests', icon: FileText, action: () => setView('resignations') },
   ];
 
   const renderContent = () => {
@@ -110,6 +112,8 @@ const AdminDashboard = () => {
         return <PayrollManager onBack={() => setView('dashboard')} />;
       case 'holidays':
         return <HolidayManager onBack={() => setView('dashboard')} />;
+      case 'resignations':
+        return <ResignationManager onBack={() => setView('dashboard')} />;
       default:
         return (
           <div className="space-y-8">
