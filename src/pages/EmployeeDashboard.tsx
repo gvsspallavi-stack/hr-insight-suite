@@ -131,11 +131,11 @@ const EmployeeDashboard = () => {
                         </div>
                       </div>
                       <div className="flex items-center gap-1">
-                        <Button variant="ghost" size="icon" asChild title="View">
-                          <a href={getPublicUrl(cert.file_path)} target="_blank" rel="noopener noreferrer"><Eye className="w-4 h-4" /></a>
+                        <Button variant="ghost" size="icon" onClick={() => handleView(cert.file_path)} title="View">
+                          <Eye className="w-4 h-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" asChild title="Download">
-                          <a href={getPublicUrl(cert.file_path)} download><Download className="w-4 h-4" /></a>
+                        <Button variant="ghost" size="icon" onClick={() => handleDownload(cert.file_path, cert.document_type)} title="Download">
+                          <Download className="w-4 h-4" />
                         </Button>
                       </div>
                     </div>
