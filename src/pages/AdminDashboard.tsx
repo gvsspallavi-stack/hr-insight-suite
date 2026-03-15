@@ -111,6 +111,8 @@ const AdminDashboard = () => {
         return <PayrollManager onBack={() => setView('dashboard')} />;
       case 'holidays':
         return <HolidayManager onBack={() => setView('dashboard')} />;
+      case 'resignations':
+        return <ResignationManager onBack={() => setView('dashboard')} />;
       default:
         return (
           <div className="space-y-8">
