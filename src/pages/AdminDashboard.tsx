@@ -83,7 +83,7 @@ const AdminDashboard = () => {
     { label: 'Payroll', desc: 'Generate salary slips', icon: DollarSign, action: () => setView('payroll') },
     { label: 'Holidays', desc: 'Manage holiday calendar', icon: Calendar, action: () => setView('holidays') },
     { label: 'Documents', desc: 'Upload & manage files', icon: FolderOpen, action: () => setView('employees') },
-  ];
+    { label: 'Resignations', desc: 'Manage resignation requests', icon: FileText, action: () => setView('resignations') },
 
   const renderContent = () => {
     switch (view) {
