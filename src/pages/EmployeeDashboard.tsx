@@ -53,6 +53,22 @@ const EmployeeDashboard = () => {
     return data.publicUrl;
   };
 
+  const handleView = (path: string) => {
+    const url = getPublicUrl(path);
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleDownload = async (path: string, docType: string) => {
+    const { data, error } = await supabase.storage.from('certificates').download(path);
+    if (error || !data) return;
+    const url = URL.createObjectURL(data);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = docType + '.' + path.split('.').pop();
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const renderContent = () => {
     if (view === 'attendance') return <MyAttendance onBack={() => setView('dashboard')} />;
     if (view === 'leaves') return <LeaveRequestForm onBack={() => setView('dashboard')} />;
