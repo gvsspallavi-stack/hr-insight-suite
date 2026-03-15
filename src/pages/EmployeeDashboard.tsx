@@ -53,6 +53,22 @@ const EmployeeDashboard = () => {
     return data.publicUrl;
   };
 
+  const handleView = (path: string) => {
+    const url = getPublicUrl(path);
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleDownload = async (path: string, docType: string) => {
+    const { data, error } = await supabase.storage.from('certificates').download(path);
+    if (error || !data) return;
+    const url = URL.createObjectURL(data);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = docType + '.' + path.split('.').pop();
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const renderContent = () => {
     if (view === 'attendance') return <MyAttendance onBack={() => setView('dashboard')} />;
     if (view === 'leaves') return <LeaveRequestForm onBack={() => setView('dashboard')} />;
@@ -115,11 +131,11 @@ const EmployeeDashboard = () => {
                         </div>
                       </div>
                       <div className="flex items-center gap-1">
-                        <Button variant="ghost" size="icon" asChild title="View">
-                          <a href={getPublicUrl(cert.file_path)} target="_blank" rel="noopener noreferrer"><Eye className="w-4 h-4" /></a>
+                        <Button variant="ghost" size="icon" onClick={() => handleView(cert.file_path)} title="View">
+                          <Eye className="w-4 h-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" asChild title="Download">
-                          <a href={getPublicUrl(cert.file_path)} download><Download className="w-4 h-4" /></a>
+                        <Button variant="ghost" size="icon" onClick={() => handleDownload(cert.file_path, cert.document_type)} title="Download">
+                          <Download className="w-4 h-4" />
                         </Button>
                       </div>
                     </div>

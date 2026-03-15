@@ -86,6 +86,22 @@ const CertificateManager = ({ employee, onBack }: CertificateManagerProps) => {
     return data.publicUrl;
   };
 
+  const handleView = (path: string) => {
+    const url = getPublicUrl(path);
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleDownload = async (path: string, docType: string) => {
+    const { data, error } = await supabase.storage.from('certificates').download(path);
+    if (error || !data) { toast.error('Download failed'); return; }
+    const url = URL.createObjectURL(data);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = docType + '.' + path.split('.').pop();
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-4">
       <button onClick={onBack} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
@@ -152,21 +168,17 @@ const CertificateManager = ({ employee, onBack }: CertificateManagerProps) => {
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Button variant="ghost" size="icon" asChild title="View">
-                      <a href={getPublicUrl(cert.file_path)} target="_blank" rel="noopener noreferrer">
+                    <div className="flex items-center gap-1">
+                      <Button variant="ghost" size="icon" onClick={() => handleView(cert.file_path)} title="View">
                         <Eye className="w-4 h-4" />
-                      </a>
-                    </Button>
-                    <Button variant="ghost" size="icon" asChild title="Download">
-                      <a href={getPublicUrl(cert.file_path)} download>
+                      </Button>
+                      <Button variant="ghost" size="icon" onClick={() => handleDownload(cert.file_path, cert.document_type)} title="Download">
                         <Download className="w-4 h-4" />
-                      </a>
-                    </Button>
-                    <Button variant="ghost" size="icon" onClick={() => handleDelete(cert.id, cert.file_path)} title="Delete">
-                      <Trash2 className="w-4 h-4 text-destructive" />
-                    </Button>
-                  </div>
+                      </Button>
+                      <Button variant="ghost" size="icon" onClick={() => handleDelete(cert.id, cert.file_path)} title="Delete">
+                        <Trash2 className="w-4 h-4 text-destructive" />
+                      </Button>
+                    </div>
                 </div>
               ))}
             </div>
