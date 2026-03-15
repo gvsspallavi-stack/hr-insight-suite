@@ -57,6 +57,7 @@ const EmployeeDashboard = () => {
     if (view === 'attendance') return <MyAttendance onBack={() => setView('dashboard')} />;
     if (view === 'leaves') return <LeaveRequestForm onBack={() => setView('dashboard')} />;
     if (view === 'payslips') return <MyPayslips onBack={() => setView('dashboard')} />;
+    if (view === 'resignation') return <ResignationForm onBack={() => setView('dashboard')} />;
 
     if (view === 'profile' && profile) {
       const fields = [
