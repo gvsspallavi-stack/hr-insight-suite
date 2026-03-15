@@ -139,7 +139,7 @@ const EmployeeDashboard = () => {
       { label: 'My Attendance', desc: 'View attendance records', icon: CalendarCheck, action: () => setView('attendance') },
       { label: 'Apply Leave', desc: 'Submit leave request', icon: ClipboardList, action: () => setView('leaves') },
       { label: 'Payslips', desc: 'View salary details', icon: DollarSign, action: () => setView('payslips') },
-      { label: 'Resignation', desc: 'Submit resignation', icon: FileText, action: () => {} },
+      { label: 'Resignation', desc: 'Submit resignation', icon: FileText, action: () => setView('resignation') },
     ];
 
     return (
