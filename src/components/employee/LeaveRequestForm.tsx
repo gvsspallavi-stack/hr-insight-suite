@@ -79,11 +79,35 @@ const LeaveRequestForm = ({ onBack }: LeaveRequestFormProps) => {
     setSubmitting(false);
   };
 
-  const sickRemaining = balance ? balance.sick_leave_total - balance.sick_leave_used : 12;
-  // CL: 1 per month, carries forward. Accrued = months elapsed so far
+  const approvedCurrentYearLeaves = myLeaves.filter((leave: any) => {
+    if (leave.approval_status !== 'approved') return false;
+    return new Date(leave.created_at).getFullYear() === currentYear;
+  });
+
+  const getRequestedDays = (leave: any) => {
+    const start = new Date(leave.start_date);
+    const end = new Date(leave.end_date);
+    if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) || end < start) return 1;
+    return Math.max(1, Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1);
+  };
+
+  const fallbackSickUsed = approvedCurrentYearLeaves
+    .filter((leave: any) => leave.leave_type?.toLowerCase() === 'sick')
+    .reduce((total: number, leave: any) => total + getRequestedDays(leave), 0);
+
+  const fallbackCasualUsed = approvedCurrentYearLeaves
+    .filter((leave: any) => leave.leave_type?.toLowerCase() === 'casual')
+    .reduce((total: number, leave: any) => total + getRequestedDays(leave), 0);
+
+  const sickUsed = balance?.sick_leave_used ?? fallbackSickUsed;
+  const casualUsed = balance?.casual_leave_used ?? fallbackCasualUsed;
+  const sickTotal = balance?.sick_leave_total ?? 12;
+  const casualTotal = balance?.casual_leave_total ?? 12;
+
+  const sickRemaining = Math.max(0, sickTotal - sickUsed);
   const currentMonth = new Date().getMonth() + 1;
-  const clAccrued = balance ? Math.min(currentMonth, balance.casual_leave_total) : currentMonth;
-  const casualRemaining = balance ? clAccrued - balance.casual_leave_used : clAccrued;
+  const clAccrued = Math.min(currentMonth, casualTotal);
+  const casualRemaining = Math.max(0, clAccrued - casualUsed);
 
   const statusColors: Record<string, string> = {
     pending: 'bg-warning text-warning-foreground',
