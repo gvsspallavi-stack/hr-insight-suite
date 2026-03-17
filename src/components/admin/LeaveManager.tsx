@@ -43,12 +43,21 @@ const LeaveManager = ({ onBack }: LeaveManagerProps) => {
       const year = startDate.getFullYear();
 
       // Get or create leave balance
-      const { data: balance } = await supabase
+      let { data: balance } = await supabase
         .from('leave_balances')
         .select('*')
         .eq('employee_id', request.employee_id)
         .eq('year', year)
         .single();
+
+      if (!balance) {
+        const { data: newBalance } = await supabase
+          .from('leave_balances')
+          .insert({ employee_id: request.employee_id, year, casual_leave_total: 12, sick_leave_total: 12, casual_leave_used: 0, sick_leave_used: 0 })
+          .select()
+          .single();
+        balance = newBalance;
+      }
 
       if (balance) {
         const leaveType = request.leave_type?.toLowerCase();
