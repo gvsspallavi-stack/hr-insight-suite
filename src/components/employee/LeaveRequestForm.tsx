@@ -35,7 +35,7 @@ const LeaveRequestForm = ({ onBack }: LeaveRequestFormProps) => {
         .select('*')
         .eq('employee_id', profileId!)
         .eq('year', currentYear)
-        .single();
+        .maybeSingle();
       return data;
     },
   });
