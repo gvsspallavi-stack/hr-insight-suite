@@ -56,6 +56,10 @@ const LeaveRequestForm = ({ onBack }: LeaveRequestFormProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!profileId || !startDate || !endDate) return;
+    if (new Date(endDate) < new Date(startDate)) {
+      toast.error('End date must be on or after start date');
+      return;
+    }
     setSubmitting(true);
 
     const { error } = await supabase.from('leave_requests').insert({

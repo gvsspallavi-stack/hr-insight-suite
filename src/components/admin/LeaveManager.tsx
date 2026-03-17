@@ -41,7 +41,7 @@ const LeaveManager = ({ onBack }: LeaveManagerProps) => {
       const endDate = new Date(request.end_date);
       if (endDate < startDate) { toast.error('Invalid dates: end date is before start date'); return; }
       const days = Math.max(1, Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1);
-      const year = startDate.getFullYear();
+      const year = new Date().getFullYear(); // Always use current year for balance tracking
 
       // Get or create leave balance
       let { data: balance } = await supabase
