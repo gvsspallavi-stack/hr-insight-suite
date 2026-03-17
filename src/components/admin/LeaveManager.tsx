@@ -39,7 +39,8 @@ const LeaveManager = ({ onBack }: LeaveManagerProps) => {
     if (status === 'approved') {
       const startDate = new Date(request.start_date);
       const endDate = new Date(request.end_date);
-      const days = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+      if (endDate < startDate) { toast.error('Invalid dates: end date is before start date'); return; }
+      const days = Math.max(1, Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1);
       const year = startDate.getFullYear();
 
       // Get or create leave balance
