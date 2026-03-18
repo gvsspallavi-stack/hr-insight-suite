@@ -144,13 +144,68 @@ const Auth = () => {
     );
   }
 
+  // Forgot password screen
+  if (view === 'forgot') {
+    const isAdmin = selectedRole === 'admin';
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background p-4">
+        <div className="w-full max-w-md space-y-6">
+          <button
+            onClick={() => setView('login')}
+            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" /> Back to login
+          </button>
+
+          <div className="text-center space-y-2">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary text-primary-foreground">
+              <KeyRound className="w-7 h-7" />
+            </div>
+            <h1 className="text-2xl font-bold text-foreground">Forgot Password</h1>
+            <p className="text-muted-foreground">WorkSync</p>
+          </div>
+
+          <Card className="shadow-lg border-border/60">
+            <CardHeader className="text-center pb-4">
+              <CardTitle className="text-lg">Reset your password</CardTitle>
+              <CardDescription>
+                Enter your {isAdmin ? 'Admin' : 'Employee'} ID and we'll send a reset link
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleForgotPassword} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="forgotId">{isAdmin ? 'Admin ID' : 'Employee ID'}</Label>
+                  <Input
+                    id="forgotId"
+                    type="text"
+                    value={forgotId}
+                    onChange={(e) => setForgotId(e.target.value)}
+                    placeholder={isAdmin ? 'admin01' : 'emp001'}
+                    required
+                  />
+                </div>
+                <Button type="submit" className="w-full" size="lg" disabled={submitting}>
+                  {submitting ? (
+                    <div className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
+                  ) : (
+                    'Send Reset Link'
+                  )}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
   const isAdmin = selectedRole === 'admin';
   const isSignup = view === 'signup';
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <div className="w-full max-w-md space-y-6">
-        {/* Back button */}
         <button
           onClick={() => setView('select')}
           className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -158,7 +213,6 @@ const Auth = () => {
           <ArrowLeft className="w-4 h-4" /> Back to role selection
         </button>
 
-        {/* Brand */}
         <div className="text-center space-y-2">
           <div className={`inline-flex items-center justify-center w-14 h-14 rounded-2xl ${isAdmin ? 'bg-primary text-primary-foreground' : 'bg-accent text-accent-foreground'}`}>
             {isAdmin ? <Shield className="w-7 h-7" /> : <User className="w-7 h-7" />}
@@ -206,17 +260,28 @@ const Auth = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    required
-                    minLength={6}
-                    autoComplete="off"
-                  />
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password">Password</Label>
+                  {!isSignup && (
+                    <button
+                      type="button"
+                      onClick={() => { setForgotId(''); setView('forgot'); }}
+                      className={`text-xs font-medium hover:underline ${isAdmin ? 'text-primary' : 'text-accent'}`}
+                    >
+                      Forgot password?
+                    </button>
+                  )}
+                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  minLength={6}
+                  autoComplete="off"
+                />
               </div>
               <Button
                 type="submit"

@@ -24,6 +24,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/employee" element={<EmployeeDashboard />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
