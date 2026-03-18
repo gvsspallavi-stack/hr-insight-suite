@@ -20,6 +20,7 @@ const Auth = () => {
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [forgotId, setForgotId] = useState('');
 
   if (loading) {
     return (
