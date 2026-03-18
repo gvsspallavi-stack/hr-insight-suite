@@ -76,12 +76,27 @@ const Auth = () => {
     setSubmitting(false);
   };
 
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    const candidates = loginEmailCandidates(forgotId);
+    for (const email of candidates) {
+      await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+    }
+    toast.success('If this ID exists, a password reset link has been sent to the associated email.');
+    setSubmitting(false);
+    setView('login');
+  };
+
   const selectRole = (r: AppRole) => {
     setSelectedRole(r);
     setView('login');
     setUserId('');
     setPassword('');
     setFullName('');
+    setForgotId('');
   };
 
   // Role selection screen
