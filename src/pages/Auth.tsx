@@ -6,10 +6,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { Shield, User, LogIn, UserPlus, ArrowLeft } from 'lucide-react';
+import { Shield, User, LogIn, UserPlus, ArrowLeft, KeyRound } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 type AppRole = 'admin' | 'employee';
-type View = 'select' | 'login' | 'signup';
+type View = 'select' | 'login' | 'signup' | 'forgot';
 
 const Auth = () => {
   const { session, role, loading, signIn, signUp } = useAuth();
