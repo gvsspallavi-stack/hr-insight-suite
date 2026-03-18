@@ -5,10 +5,36 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, Save } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { ArrowLeft, Save, Check, ChevronsUpDown } from 'lucide-react';
 import { toast } from 'sonner';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
+import { cn } from '@/lib/utils';
 import type { Tables } from '@/integrations/supabase/types';
+
+const DEFAULT_DESIGNATIONS = [
+  'Professor',
+  'Associate Professor',
+  'Assistant Professor',
+  'Head of Department',
+  'Principal',
+  'Director',
+  'Lecturer',
+  'Senior Lecturer',
+  'Lab Assistant',
+  'Software Engineer',
+  'Senior Software Engineer',
+  'Manager',
+  'Senior Manager',
+  'Team Lead',
+  'HR Executive',
+  'Accountant',
+  'Administrative Officer',
+  'Clerk',
+  'Librarian',
+  'Physical Director',
+];
 
 type Profile = Tables<'profiles'>;
 
@@ -20,6 +46,22 @@ interface EmployeeFormProps {
 const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
   const queryClient = useQueryClient();
   const isEditing = !!employee;
+  const [designationOpen, setDesignationOpen] = useState(false);
+
+  // Fetch existing designations from profiles to merge with defaults
+  const { data: existingDesignations } = useQuery({
+    queryKey: ['designations'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('profiles')
+        .select('designation')
+        .not('designation', 'is', null)
+        .not('designation', 'eq', '');
+      const unique = new Set(data?.map((p) => p.designation!).filter(Boolean) || []);
+      DEFAULT_DESIGNATIONS.forEach((d) => unique.add(d));
+      return Array.from(unique).sort();
+    },
+  });
 
   const [form, setForm] = useState({
     full_name: '',
@@ -208,8 +250,38 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
                 <Input id="department" value={form.department} onChange={(e) => handleChange('department', e.target.value)} placeholder="Engineering" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="designation">Designation</Label>
-                <Input id="designation" value={form.designation} onChange={(e) => handleChange('designation', e.target.value)} placeholder="Software Engineer" />
+                <Label>Designation</Label>
+                <Popover open={designationOpen} onOpenChange={setDesignationOpen}>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" role="combobox" aria-expanded={designationOpen} className="w-full justify-between font-normal">
+                      {form.designation || 'Select designation…'}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                    <Command>
+                      <CommandInput placeholder="Search designation…" />
+                      <CommandList>
+                        <CommandEmpty>No designation found.</CommandEmpty>
+                        <CommandGroup>
+                          {(existingDesignations || DEFAULT_DESIGNATIONS).map((d) => (
+                            <CommandItem
+                              key={d}
+                              value={d}
+                              onSelect={(val) => {
+                                handleChange('designation', val);
+                                setDesignationOpen(false);
+                              }}
+                            >
+                              <Check className={cn('mr-2 h-4 w-4', form.designation === d ? 'opacity-100' : 'opacity-0')} />
+                              {d}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="employment_type">Employment Type</Label>
