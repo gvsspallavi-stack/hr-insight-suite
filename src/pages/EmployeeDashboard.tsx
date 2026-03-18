@@ -11,6 +11,7 @@ import MyAttendance from '@/components/employee/MyAttendance';
 import LeaveRequestForm from '@/components/employee/LeaveRequestForm';
 import MyPayslips from '@/components/employee/MyPayslips';
 import ResignationForm from '@/components/employee/ResignationForm';
+import { openCertificatePreview } from '@/lib/certificate-preview';
 
 type View = 'dashboard' | 'profile' | 'certificates' | 'attendance' | 'leaves' | 'payslips' | 'resignation';
 
@@ -48,14 +49,8 @@ const EmployeeDashboard = () => {
 
   if (role !== 'employee') return <Navigate to="/auth" replace />;
 
-  const getPublicUrl = (path: string) => {
-    const { data } = supabase.storage.from('certificates').getPublicUrl(path);
-    return data.publicUrl;
-  };
-
-  const handleView = (path: string) => {
-    const url = getPublicUrl(path);
-    window.open(url, '_blank', 'noopener,noreferrer');
+  const handleView = async (path: string) => {
+    await openCertificatePreview(path);
   };
 
   const handleDownload = async (path: string, docType: string) => {

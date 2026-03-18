@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ArrowLeft, Upload, FileText, Trash2, Download, Eye } from 'lucide-react';
 import { toast } from 'sonner';
+import { openCertificatePreview } from '@/lib/certificate-preview';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Profile = Tables<'profiles'>;
@@ -81,14 +82,8 @@ const CertificateManager = ({ employee, onBack }: CertificateManagerProps) => {
     toast.success('Certificate deleted');
   };
 
-  const getPublicUrl = (path: string) => {
-    const { data } = supabase.storage.from('certificates').getPublicUrl(path);
-    return data.publicUrl;
-  };
-
-  const handleView = (path: string) => {
-    const url = getPublicUrl(path);
-    window.open(url, '_blank', 'noopener,noreferrer');
+  const handleView = async (path: string) => {
+    await openCertificatePreview(path);
   };
 
   const handleDownload = async (path: string, docType: string) => {
