@@ -46,6 +46,22 @@ interface EmployeeFormProps {
 const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
   const queryClient = useQueryClient();
   const isEditing = !!employee;
+  const [designationOpen, setDesignationOpen] = useState(false);
+
+  // Fetch existing designations from profiles to merge with defaults
+  const { data: existingDesignations } = useQuery({
+    queryKey: ['designations'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('profiles')
+        .select('designation')
+        .not('designation', 'is', null)
+        .not('designation', 'eq', '');
+      const unique = new Set(data?.map((p) => p.designation!).filter(Boolean) || []);
+      DEFAULT_DESIGNATIONS.forEach((d) => unique.add(d));
+      return Array.from(unique).sort();
+    },
+  });
 
   const [form, setForm] = useState({
     full_name: '',
