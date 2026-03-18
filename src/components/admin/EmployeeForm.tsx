@@ -5,10 +5,36 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, Save } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { ArrowLeft, Save, Check, ChevronsUpDown } from 'lucide-react';
 import { toast } from 'sonner';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
+import { cn } from '@/lib/utils';
 import type { Tables } from '@/integrations/supabase/types';
+
+const DEFAULT_DESIGNATIONS = [
+  'Professor',
+  'Associate Professor',
+  'Assistant Professor',
+  'Head of Department',
+  'Principal',
+  'Director',
+  'Lecturer',
+  'Senior Lecturer',
+  'Lab Assistant',
+  'Software Engineer',
+  'Senior Software Engineer',
+  'Manager',
+  'Senior Manager',
+  'Team Lead',
+  'HR Executive',
+  'Accountant',
+  'Administrative Officer',
+  'Clerk',
+  'Librarian',
+  'Physical Director',
+];
 
 type Profile = Tables<'profiles'>;
 
