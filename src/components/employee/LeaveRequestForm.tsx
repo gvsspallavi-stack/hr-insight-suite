@@ -163,11 +163,11 @@ const LeaveRequestForm = ({ onBack }: LeaveRequestFormProps) => {
               </div>
               <div className="space-y-1">
                 <Label>Start Date</Label>
-                <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} required min={`${currentYear}-01-01`} max={`${currentYear}-12-31`} />
+                <DateInput value={startDate} onChange={(e) => setStartDate(e.target.value)} required min={`${currentYear}-01-01`} max={`${currentYear}-12-31`} />
               </div>
               <div className="space-y-1">
                 <Label>End Date</Label>
-                <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} required min={startDate || `${currentYear}-01-01`} max={`${currentYear}-12-31`} />
+                <DateInput value={endDate} onChange={(e) => setEndDate(e.target.value)} required min={startDate || `${currentYear}-01-01`} max={`${currentYear}-12-31`} />
               </div>
             </div>
             <div className="space-y-1">

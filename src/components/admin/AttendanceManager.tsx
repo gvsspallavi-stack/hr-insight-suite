@@ -121,7 +121,7 @@ const AttendanceManager = ({ onBack }: AttendanceManagerProps) => {
               <CalendarCheck className="w-5 h-5" /> Daily Attendance
             </CardTitle>
             <div className="flex items-center gap-2">
-              <Input type="date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} className="w-auto" />
+              <DateInput value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} className="w-auto" />
               <Button size="sm" onClick={markAllPresent} disabled={saving || isHoliday || isSunday}>
                 Mark All Present
               </Button>

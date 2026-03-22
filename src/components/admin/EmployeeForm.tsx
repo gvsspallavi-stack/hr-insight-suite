@@ -303,7 +303,7 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="joining_date">Joining Date</Label>
-                <Input id="joining_date" type="date" value={form.joining_date} onChange={(e) => handleChange('joining_date', e.target.value)} />
+                <DateInput id="joining_date" value={form.joining_date} onChange={(e) => handleChange('joining_date', e.target.value)} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="base_salary">Monthly Salary (₹)</Label>

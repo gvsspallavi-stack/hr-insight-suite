@@ -69,7 +69,7 @@ const HolidayManager = ({ onBack }: HolidayManagerProps) => {
           <form onSubmit={handleAdd} className="flex flex-col sm:flex-row gap-3 mb-6">
             <div className="flex-1 space-y-1">
               <Label htmlFor="hol-date">Date</Label>
-              <Input id="hol-date" type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
+              <DateInput id="hol-date" value={date} onChange={(e) => setDate(e.target.value)} required />
             </div>
             <div className="flex-1 space-y-1">
               <Label htmlFor="hol-name">Holiday Name</Label>
