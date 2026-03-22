@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { DateInput } from '@/components/ui/date-input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, CalendarCheck } from 'lucide-react';
@@ -120,7 +121,7 @@ const AttendanceManager = ({ onBack }: AttendanceManagerProps) => {
               <CalendarCheck className="w-5 h-5" /> Daily Attendance
             </CardTitle>
             <div className="flex items-center gap-2">
-              <Input type="date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} className="w-auto" />
+              <DateInput value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} className="w-auto" />
               <Button size="sm" onClick={markAllPresent} disabled={saving || isHoliday || isSunday}>
                 Mark All Present
               </Button>

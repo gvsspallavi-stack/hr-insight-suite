@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { DateInput } from '@/components/ui/date-input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, Plus, Trash2, Calendar } from 'lucide-react';
@@ -68,7 +69,7 @@ const HolidayManager = ({ onBack }: HolidayManagerProps) => {
           <form onSubmit={handleAdd} className="flex flex-col sm:flex-row gap-3 mb-6">
             <div className="flex-1 space-y-1">
               <Label htmlFor="hol-date">Date</Label>
-              <Input id="hol-date" type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
+              <DateInput id="hol-date" value={date} onChange={(e) => setDate(e.target.value)} required />
             </div>
             <div className="flex-1 space-y-1">
               <Label htmlFor="hol-name">Holiday Name</Label>

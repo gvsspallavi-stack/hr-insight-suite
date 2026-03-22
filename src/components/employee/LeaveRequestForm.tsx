@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { DateInput } from '@/components/ui/date-input';
 import { ArrowLeft, ClipboardList, Send } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -162,11 +163,11 @@ const LeaveRequestForm = ({ onBack }: LeaveRequestFormProps) => {
               </div>
               <div className="space-y-1">
                 <Label>Start Date</Label>
-                <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} required min={`${currentYear}-01-01`} max={`${currentYear}-12-31`} />
+                <DateInput value={startDate} onChange={(e) => setStartDate(e.target.value)} required min={`${currentYear}-01-01`} max={`${currentYear}-12-31`} />
               </div>
               <div className="space-y-1">
                 <Label>End Date</Label>
-                <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} required min={startDate || `${currentYear}-01-01`} max={`${currentYear}-12-31`} />
+                <DateInput value={endDate} onChange={(e) => setEndDate(e.target.value)} required min={startDate || `${currentYear}-01-01`} max={`${currentYear}-12-31`} />
               </div>
             </div>
             <div className="space-y-1">

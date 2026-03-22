@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { DateInput } from '@/components/ui/date-input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -302,7 +303,7 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="joining_date">Joining Date</Label>
-                <Input id="joining_date" type="date" value={form.joining_date} onChange={(e) => handleChange('joining_date', e.target.value)} />
+                <DateInput id="joining_date" value={form.joining_date} onChange={(e) => handleChange('joining_date', e.target.value)} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="base_salary">Monthly Salary (₹)</Label>
