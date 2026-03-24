@@ -15,20 +15,25 @@ import { cn } from '@/lib/utils';
 import type { Tables } from '@/integrations/supabase/types';
 
 const DEFAULT_DESIGNATIONS = [
-  'Professor',
-  'Associate Professor',
-  'Assistant Professor',
-  'Head of Department',
-  'Principal',
-  'Vice Principal',
+  'Chancellor',
+  'Vice Chancellor',
+  'Pro Vice Chancellor',
   'Director',
   'Dean',
   'Registrar',
+  'Principal',
+  'Vice Principal',
   'Controller of Examinations',
-  'Lecturer',
+  'Head of Department',
+  'Professor',
+  'Associate Professor',
+  'Assistant Professor',
   'Senior Lecturer',
-  'Lab Assistant',
+  'Lecturer',
+  'Guest Lecturer',
+  'Research Associate',
   'Lab Technician',
+  'Lab Assistant',
   'Librarian',
   'Assistant Librarian',
   'Physical Director',
@@ -36,8 +41,35 @@ const DEFAULT_DESIGNATIONS = [
   'Office Superintendent',
   'Accountant',
   'Clerk',
-  'Attender',
   'System Administrator',
+  'Attender',
+];
+
+const DEFAULT_DEPARTMENTS = [
+  'Computer Science & Engineering',
+  'Information Technology',
+  'Electronics & Communication Engineering',
+  'Electrical & Electronics Engineering',
+  'Mechanical Engineering',
+  'Civil Engineering',
+  'Chemical Engineering',
+  'Biotechnology',
+  'Artificial Intelligence & Data Science',
+  'Cyber Security',
+  'Mathematics',
+  'Physics',
+  'Chemistry',
+  'English',
+  'MBA / Management Studies',
+  'MCA / Computer Applications',
+  'Commerce',
+  'Economics',
+  'Library',
+  'Physical Education',
+  'Administration',
+  'Examination Cell',
+  'Finance & Accounts',
+  'Human Resources',
 ];
 
 type Profile = Tables<'profiles'>;
@@ -51,6 +83,7 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
   const queryClient = useQueryClient();
   const isEditing = !!employee;
   const [designationOpen, setDesignationOpen] = useState(false);
+  const [departmentOpen, setDepartmentOpen] = useState(false);
 
   // Fetch existing designations from profiles to merge with defaults
   const { data: existingDesignations } = useQuery({
@@ -63,6 +96,21 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
         .not('designation', 'eq', '');
       const unique = new Set(data?.map((p) => p.designation!).filter(Boolean) || []);
       DEFAULT_DESIGNATIONS.forEach((d) => unique.add(d));
+      return Array.from(unique).sort();
+    },
+  });
+
+  // Fetch existing departments from profiles to merge with defaults
+  const { data: existingDepartments } = useQuery({
+    queryKey: ['departments'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('profiles')
+        .select('department')
+        .not('department', 'is', null)
+        .not('department', 'eq', '');
+      const unique = new Set(data?.map((p) => p.department!).filter(Boolean) || []);
+      DEFAULT_DEPARTMENTS.forEach((d) => unique.add(d));
       return Array.from(unique).sort();
     },
   });
@@ -250,8 +298,38 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
                 <Input id="phone" value={form.phone} onChange={(e) => { const val = e.target.value.replace(/\D/g, '').slice(0, 10); handleChange('phone', val); }} placeholder="9876543210" maxLength={10} inputMode="numeric" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="department">Department</Label>
-                <Input id="department" value={form.department} onChange={(e) => handleChange('department', e.target.value)} placeholder="Engineering" />
+                <Label>Department</Label>
+                <Popover open={departmentOpen} onOpenChange={setDepartmentOpen}>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" role="combobox" aria-expanded={departmentOpen} className="w-full justify-between font-normal">
+                      {form.department || 'Select department…'}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                    <Command>
+                      <CommandInput placeholder="Search department…" />
+                      <CommandList>
+                        <CommandEmpty>No department found.</CommandEmpty>
+                        <CommandGroup>
+                          {(existingDepartments || DEFAULT_DEPARTMENTS).map((d) => (
+                            <CommandItem
+                              key={d}
+                              value={d}
+                              onSelect={(val) => {
+                                handleChange('department', val);
+                                setDepartmentOpen(false);
+                              }}
+                            >
+                              <Check className={cn('mr-2 h-4 w-4', form.department === d ? 'opacity-100' : 'opacity-0')} />
+                              {d}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
               </div>
               <div className="space-y-2">
                 <Label>Designation</Label>
