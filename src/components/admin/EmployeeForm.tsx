@@ -100,6 +100,21 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
     },
   });
 
+  // Fetch existing departments from profiles to merge with defaults
+  const { data: existingDepartments } = useQuery({
+    queryKey: ['departments'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('profiles')
+        .select('department')
+        .not('department', 'is', null)
+        .not('department', 'eq', '');
+      const unique = new Set(data?.map((p) => p.department!).filter(Boolean) || []);
+      DEFAULT_DEPARTMENTS.forEach((d) => unique.add(d));
+      return Array.from(unique).sort();
+    },
+  });
+
   const [form, setForm] = useState({
     full_name: '',
     email: '',
