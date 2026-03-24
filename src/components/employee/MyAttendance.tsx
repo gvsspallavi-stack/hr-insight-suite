@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { MonthInput } from '@/components/ui/month-input';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, CalendarCheck } from 'lucide-react';
 
@@ -58,7 +58,7 @@ const MyAttendance = ({ onBack }: MyAttendanceProps) => {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2"><CalendarCheck className="w-5 h-5" /> My Attendance</CardTitle>
-            <Input type="month" value={month} onChange={(e) => setMonth(e.target.value)} className="w-auto" />
+            <MonthInput value={month} onChange={(e) => setMonth(e.target.value)} className="w-auto" />
           </div>
         </CardHeader>
         <CardContent>

@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { MonthInput } from '@/components/ui/month-input';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, DollarSign, Calculator } from 'lucide-react';
 import { toast } from 'sonner';
@@ -149,7 +150,7 @@ const PayrollManager = ({ onBack }: PayrollManagerProps) => {
               <DollarSign className="w-5 h-5" /> Payroll — {month}
             </CardTitle>
             <div className="flex items-center gap-2">
-              <Input type="month" value={month} onChange={(e) => setMonth(e.target.value)} className="w-auto" />
+              <MonthInput value={month} onChange={(e) => setMonth(e.target.value)} className="w-auto" />
               <Input type="number" value={taxRate} onChange={(e) => setTaxRate(Number(e.target.value))} className="w-20" placeholder="Tax %" min={0} max={100} />
               <Button size="sm" onClick={generatePayroll} disabled={generating}>
                 <Calculator className="w-4 h-4 mr-1" /> {generating ? 'Generating...' : 'Generate'}
