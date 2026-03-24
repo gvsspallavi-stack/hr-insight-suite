@@ -58,7 +58,7 @@ const MyAttendance = ({ onBack }: MyAttendanceProps) => {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2"><CalendarCheck className="w-5 h-5" /> My Attendance</CardTitle>
-            <Input type="month" value={month} onChange={(e) => setMonth(e.target.value)} className="w-auto" />
+            <MonthInput value={month} onChange={(e) => setMonth(e.target.value)} className="w-auto" />
           </div>
         </CardHeader>
         <CardContent>
