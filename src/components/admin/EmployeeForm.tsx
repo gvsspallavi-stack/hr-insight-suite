@@ -83,6 +83,7 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
   const queryClient = useQueryClient();
   const isEditing = !!employee;
   const [designationOpen, setDesignationOpen] = useState(false);
+  const [departmentOpen, setDepartmentOpen] = useState(false);
 
   // Fetch existing designations from profiles to merge with defaults
   const { data: existingDesignations } = useQuery({
