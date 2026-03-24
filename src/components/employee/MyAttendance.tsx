@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { MonthInput } from '@/components/ui/month-input';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, CalendarCheck } from 'lucide-react';
 
