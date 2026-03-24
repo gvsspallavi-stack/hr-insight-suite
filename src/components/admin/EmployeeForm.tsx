@@ -298,8 +298,38 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
                 <Input id="phone" value={form.phone} onChange={(e) => { const val = e.target.value.replace(/\D/g, '').slice(0, 10); handleChange('phone', val); }} placeholder="9876543210" maxLength={10} inputMode="numeric" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="department">Department</Label>
-                <Input id="department" value={form.department} onChange={(e) => handleChange('department', e.target.value)} placeholder="Engineering" />
+                <Label>Department</Label>
+                <Popover open={departmentOpen} onOpenChange={setDepartmentOpen}>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" role="combobox" aria-expanded={departmentOpen} className="w-full justify-between font-normal">
+                      {form.department || 'Select department…'}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                    <Command>
+                      <CommandInput placeholder="Search department…" />
+                      <CommandList>
+                        <CommandEmpty>No department found.</CommandEmpty>
+                        <CommandGroup>
+                          {(existingDepartments || DEFAULT_DEPARTMENTS).map((d) => (
+                            <CommandItem
+                              key={d}
+                              value={d}
+                              onSelect={(val) => {
+                                handleChange('department', val);
+                                setDepartmentOpen(false);
+                              }}
+                            >
+                              <Check className={cn('mr-2 h-4 w-4', form.department === d ? 'opacity-100' : 'opacity-0')} />
+                              {d}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
               </div>
               <div className="space-y-2">
                 <Label>Designation</Label>
