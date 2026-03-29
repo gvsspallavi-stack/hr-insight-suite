@@ -11,6 +11,7 @@ import MyAttendance from '@/components/employee/MyAttendance';
 import LeaveRequestForm from '@/components/employee/LeaveRequestForm';
 import MyPayslips from '@/components/employee/MyPayslips';
 import ResignationForm from '@/components/employee/ResignationForm';
+import MyProfile from '@/components/employee/MyProfile';
 import { openCertificatePreview } from '@/lib/certificate-preview';
 
 type View = 'dashboard' | 'profile' | 'certificates' | 'attendance' | 'leaves' | 'payslips' | 'resignation';
@@ -69,39 +70,7 @@ const EmployeeDashboard = () => {
     if (view === 'leaves') return <LeaveRequestForm onBack={() => setView('dashboard')} />;
     if (view === 'payslips') return <MyPayslips onBack={() => setView('dashboard')} />;
     if (view === 'resignation') return <ResignationForm onBack={() => setView('dashboard')} />;
-
-    if (view === 'profile' && profile) {
-      const fields = [
-        { label: 'Full Name', value: profile.full_name },
-        { label: 'Email', value: profile.email },
-        { label: 'Phone', value: profile.phone },
-        { label: 'Department', value: profile.department },
-        { label: 'Designation', value: profile.designation },
-        { label: 'Employment Type', value: profile.employment_type },
-        { label: 'Joining Date', value: profile.joining_date },
-      ];
-
-      return (
-        <div className="space-y-4">
-          <button onClick={() => setView('dashboard')} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft className="w-4 h-4" /> Back
-          </button>
-          <Card>
-            <CardHeader><CardTitle>My Profile</CardTitle></CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {fields.map((f) => (
-                  <div key={f.label} className="space-y-1">
-                    <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">{f.label}</p>
-                    <p className="text-foreground font-medium">{f.value || '—'}</p>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      );
-    }
+    if (view === 'profile' && profileId) return <MyProfile profileId={profileId} onBack={() => setView('dashboard')} />;
 
     if (view === 'certificates') {
       return (
