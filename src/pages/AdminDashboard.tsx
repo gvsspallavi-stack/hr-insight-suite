@@ -115,6 +115,8 @@ const AdminDashboard = () => {
         return <HolidayManager onBack={() => setView('dashboard')} />;
       case 'resignations':
         return <ResignationManager onBack={() => setView('dashboard')} />;
+      case 'my-profile':
+        return profileId ? <MyProfile profileId={profileId} onBack={() => setView('dashboard')} /> : null;
       default:
         return (
           <div className="space-y-8">
@@ -176,9 +178,14 @@ const AdminDashboard = () => {
               </div>
             </button>
           </div>
-          <Button variant="outline" size="sm" onClick={signOut}>
-            <LogOut className="w-4 h-4 mr-2" /> Sign Out
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" onClick={() => setView('my-profile')}>
+              <User className="w-4 h-4 mr-2" /> Profile
+            </Button>
+            <Button variant="outline" size="sm" onClick={signOut}>
+              <LogOut className="w-4 h-4 mr-2" /> Sign Out
+            </Button>
+          </div>
         </div>
       </header>
 
