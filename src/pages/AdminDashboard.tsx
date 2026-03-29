@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Users, CalendarCheck, ClipboardList, DollarSign, LogOut, FolderOpen, BarChart3, Calendar, FileText } from 'lucide-react';
+import { Users, CalendarCheck, ClipboardList, DollarSign, LogOut, FolderOpen, Calendar, FileText, User } from 'lucide-react';
 import EmployeeList from '@/components/admin/EmployeeList';
 import EmployeeForm from '@/components/admin/EmployeeForm';
 import CertificateManager from '@/components/admin/CertificateManager';
@@ -14,13 +14,14 @@ import LeaveManager from '@/components/admin/LeaveManager';
 import PayrollManager from '@/components/admin/PayrollManager';
 import HolidayManager from '@/components/admin/HolidayManager';
 import ResignationManager from '@/components/admin/ResignationManager';
+import MyProfile from '@/components/employee/MyProfile';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Profile = Tables<'profiles'>;
-type View = 'dashboard' | 'employees' | 'add' | 'edit' | 'certificates' | 'attendance' | 'leaves' | 'payroll' | 'documents' | 'holidays' | 'resignations';
+type View = 'dashboard' | 'employees' | 'add' | 'edit' | 'certificates' | 'attendance' | 'leaves' | 'payroll' | 'documents' | 'holidays' | 'resignations' | 'my-profile';
 
 const AdminDashboard = () => {
-  const { role, user, loading, signOut } = useAuth();
+  const { role, user, profileId, loading, signOut } = useAuth();
   const [view, setView] = useState<View>('dashboard');
   const [selectedEmployee, setSelectedEmployee] = useState<Profile | null>(null);
 
