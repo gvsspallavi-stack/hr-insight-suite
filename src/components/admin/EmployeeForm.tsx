@@ -83,6 +83,9 @@ interface EmployeeFormProps {
 const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
   const queryClient = useQueryClient();
   const isEditing = !!employee;
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  const [photoPath, setPhotoPath] = useState<string | null>(null);
   const [designationOpen, setDesignationOpen] = useState(false);
   const [departmentOpen, setDepartmentOpen] = useState(false);
 
