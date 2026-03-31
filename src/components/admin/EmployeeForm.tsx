@@ -145,8 +145,59 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
         joining_date: employee.joining_date || '',
         base_salary: String((employee as any).base_salary || ''),
       });
+      setPhotoPath(employee.profile_photo || null);
     }
   }, [employee]);
+
+  const getPhotoUrl = (path: string | null) => {
+    if (!path) return null;
+    if (path.startsWith('http')) return path;
+    const { data } = supabase.storage.from('profile-photos').getPublicUrl(path);
+    return data.publicUrl;
+  };
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !employee) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select an image file');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image must be less than 5MB');
+      return;
+    }
+
+    setUploading(true);
+    const ext = file.name.split('.').pop();
+    const filePath = `${employee.id}/photo.${ext}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('profile-photos')
+      .upload(filePath, file, { upsert: true });
+
+    if (uploadError) {
+      toast.error('Failed to upload photo');
+      setUploading(false);
+      return;
+    }
+
+    const { error: updateError } = await supabase
+      .from('profiles')
+      .update({ profile_photo: filePath })
+      .eq('id', employee.id);
+
+    if (updateError) {
+      toast.error('Failed to update profile photo');
+    } else {
+      toast.success('Profile photo updated');
+      setPhotoPath(filePath);
+      queryClient.invalidateQueries({ queryKey: ['employees'] });
+      queryClient.invalidateQueries({ queryKey: ['my-profile', employee.id] });
+    }
+    setUploading(false);
+  };
 
   const handleChange = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
