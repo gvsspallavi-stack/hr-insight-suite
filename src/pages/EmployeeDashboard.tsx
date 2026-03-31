@@ -117,6 +117,7 @@ const EmployeeDashboard = () => {
     // Dashboard
     const quickActions = [
       { label: 'My Profile', desc: 'View your information', icon: User, action: () => setView('profile') },
+      { label: 'Holiday Calendar', desc: 'View upcoming holidays', icon: CalendarDays, action: () => setView('holidays') },
       { label: 'My Certificates', desc: 'View uploaded certificates', icon: FolderOpen, action: () => setView('certificates') },
       { label: 'My Attendance', desc: 'View attendance records', icon: CalendarCheck, action: () => setView('attendance') },
       { label: 'Apply Leave', desc: 'Submit leave request', icon: ClipboardList, action: () => setView('leaves') },
