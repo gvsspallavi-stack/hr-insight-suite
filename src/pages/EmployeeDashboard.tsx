@@ -6,15 +6,16 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CalendarCheck, FileText, DollarSign, LogOut, ClipboardList, FolderOpen, User, ArrowLeft, Eye, Download } from 'lucide-react';
+import { CalendarCheck, FileText, DollarSign, LogOut, ClipboardList, FolderOpen, User, ArrowLeft, Eye, Download, CalendarDays } from 'lucide-react';
 import MyAttendance from '@/components/employee/MyAttendance';
 import LeaveRequestForm from '@/components/employee/LeaveRequestForm';
 import MyPayslips from '@/components/employee/MyPayslips';
 import ResignationForm from '@/components/employee/ResignationForm';
 import MyProfile from '@/components/employee/MyProfile';
+import HolidayCalendar from '@/components/employee/HolidayCalendar';
 import { openCertificatePreview } from '@/lib/certificate-preview';
 
-type View = 'dashboard' | 'profile' | 'certificates' | 'attendance' | 'leaves' | 'payslips' | 'resignation';
+type View = 'dashboard' | 'profile' | 'certificates' | 'attendance' | 'leaves' | 'payslips' | 'resignation' | 'holidays';
 
 const EmployeeDashboard = () => {
   const { role, user, profileId, loading, signOut } = useAuth();
@@ -70,6 +71,7 @@ const EmployeeDashboard = () => {
     if (view === 'leaves') return <LeaveRequestForm onBack={() => setView('dashboard')} />;
     if (view === 'payslips') return <MyPayslips onBack={() => setView('dashboard')} />;
     if (view === 'resignation') return <ResignationForm onBack={() => setView('dashboard')} />;
+    if (view === 'holidays') return <HolidayCalendar onBack={() => setView('dashboard')} />;
     if (view === 'profile' && profileId) return <MyProfile profileId={profileId} onBack={() => setView('dashboard')} />;
 
     if (view === 'certificates') {
@@ -115,6 +117,7 @@ const EmployeeDashboard = () => {
     // Dashboard
     const quickActions = [
       { label: 'My Profile', desc: 'View your information', icon: User, action: () => setView('profile') },
+      { label: 'Holiday Calendar', desc: 'View upcoming holidays', icon: CalendarDays, action: () => setView('holidays') },
       { label: 'My Certificates', desc: 'View uploaded certificates', icon: FolderOpen, action: () => setView('certificates') },
       { label: 'My Attendance', desc: 'View attendance records', icon: CalendarCheck, action: () => setView('attendance') },
       { label: 'Apply Leave', desc: 'Submit leave request', icon: ClipboardList, action: () => setView('leaves') },
