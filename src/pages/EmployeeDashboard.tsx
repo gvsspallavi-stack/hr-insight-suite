@@ -12,9 +12,10 @@ import LeaveRequestForm from '@/components/employee/LeaveRequestForm';
 import MyPayslips from '@/components/employee/MyPayslips';
 import ResignationForm from '@/components/employee/ResignationForm';
 import MyProfile from '@/components/employee/MyProfile';
+import HolidayCalendar from '@/components/employee/HolidayCalendar';
 import { openCertificatePreview } from '@/lib/certificate-preview';
 
-type View = 'dashboard' | 'profile' | 'certificates' | 'attendance' | 'leaves' | 'payslips' | 'resignation';
+type View = 'dashboard' | 'profile' | 'certificates' | 'attendance' | 'leaves' | 'payslips' | 'resignation' | 'holidays';
 
 const EmployeeDashboard = () => {
   const { role, user, profileId, loading, signOut } = useAuth();
