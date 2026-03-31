@@ -339,6 +339,40 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
               </div>
             )}
 
+            {isEditing && (
+              <div className="flex items-center gap-4 p-4 rounded-lg bg-muted/20 border border-border">
+                <div className="relative group">
+                  <Avatar className="w-16 h-16 text-lg border-2 border-border">
+                    <AvatarImage src={getPhotoUrl(photoPath) || undefined} alt={form.full_name} />
+                    <AvatarFallback className="bg-primary/10 text-primary font-bold">
+                      {form.full_name?.charAt(0)?.toUpperCase() || '?'}
+                    </AvatarFallback>
+                  </Avatar>
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploading}
+                    className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                  >
+                    <Camera className="w-5 h-5 text-white" />
+                  </button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handlePhotoUpload}
+                  />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-foreground">Profile Photo</p>
+                  <p className="text-xs text-muted-foreground">
+                    {uploading ? 'Uploading...' : 'Hover and click to change'}
+                  </p>
+                </div>
+              </div>
+            )}
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="full_name">Full Name *</Label>
