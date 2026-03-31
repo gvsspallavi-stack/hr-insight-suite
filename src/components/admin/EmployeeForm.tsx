@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,7 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
-import { ArrowLeft, Save, Check, ChevronsUpDown } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ArrowLeft, Save, Check, ChevronsUpDown, Camera } from 'lucide-react';
 import { toast } from 'sonner';
 import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';
@@ -82,6 +83,9 @@ interface EmployeeFormProps {
 const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
   const queryClient = useQueryClient();
   const isEditing = !!employee;
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  const [photoPath, setPhotoPath] = useState<string | null>(null);
   const [designationOpen, setDesignationOpen] = useState(false);
   const [departmentOpen, setDepartmentOpen] = useState(false);
 
@@ -141,8 +145,59 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
         joining_date: employee.joining_date || '',
         base_salary: String((employee as any).base_salary || ''),
       });
+      setPhotoPath(employee.profile_photo || null);
     }
   }, [employee]);
+
+  const getPhotoUrl = (path: string | null) => {
+    if (!path) return null;
+    if (path.startsWith('http')) return path;
+    const { data } = supabase.storage.from('profile-photos').getPublicUrl(path);
+    return data.publicUrl;
+  };
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !employee) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select an image file');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image must be less than 5MB');
+      return;
+    }
+
+    setUploading(true);
+    const ext = file.name.split('.').pop();
+    const filePath = `${employee.id}/photo.${ext}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('profile-photos')
+      .upload(filePath, file, { upsert: true });
+
+    if (uploadError) {
+      toast.error('Failed to upload photo');
+      setUploading(false);
+      return;
+    }
+
+    const { error: updateError } = await supabase
+      .from('profiles')
+      .update({ profile_photo: filePath })
+      .eq('id', employee.id);
+
+    if (updateError) {
+      toast.error('Failed to update profile photo');
+    } else {
+      toast.success('Profile photo updated');
+      setPhotoPath(filePath);
+      queryClient.invalidateQueries({ queryKey: ['employees'] });
+      queryClient.invalidateQueries({ queryKey: ['my-profile', employee.id] });
+    }
+    setUploading(false);
+  };
 
   const handleChange = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -280,6 +335,40 @@ const EmployeeForm = ({ employee, onBack }: EmployeeFormProps) => {
                     autoComplete="new-password"
                     data-lpignore="true"
                   />
+                </div>
+              </div>
+            )}
+
+            {isEditing && (
+              <div className="flex items-center gap-4 p-4 rounded-lg bg-muted/20 border border-border">
+                <div className="relative group">
+                  <Avatar className="w-16 h-16 text-lg border-2 border-border">
+                    <AvatarImage src={getPhotoUrl(photoPath) || undefined} alt={form.full_name} />
+                    <AvatarFallback className="bg-primary/10 text-primary font-bold">
+                      {form.full_name?.charAt(0)?.toUpperCase() || '?'}
+                    </AvatarFallback>
+                  </Avatar>
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploading}
+                    className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                  >
+                    <Camera className="w-5 h-5 text-white" />
+                  </button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handlePhotoUpload}
+                  />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-foreground">Profile Photo</p>
+                  <p className="text-xs text-muted-foreground">
+                    {uploading ? 'Uploading...' : 'Hover and click to change'}
+                  </p>
                 </div>
               </div>
             )}
