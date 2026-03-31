@@ -189,8 +189,13 @@ const MyProfile = ({ profileId, onBack }: MyProfileProps) => {
             {editing ? (
               <Input
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="Enter phone number"
+                onChange={(e) => {
+                  const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                  setPhone(val);
+                }}
+                placeholder="9876543210"
+                maxLength={10}
+                inputMode="numeric"
                 className="max-w-xs"
               />
             ) : (
