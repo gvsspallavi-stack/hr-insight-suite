@@ -3,9 +3,9 @@ import { useAuth } from '@/hooks/useAuth';
 import { Navigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Users, CalendarCheck, ClipboardList, DollarSign, LogOut, FolderOpen, Calendar, FileText, User } from 'lucide-react';
+import { Users, CalendarCheck, ClipboardList, DollarSign, LogOut, FolderOpen, Calendar, FileText, User, RefreshCw } from 'lucide-react';
 import EmployeeList from '@/components/admin/EmployeeList';
 import EmployeeForm from '@/components/admin/EmployeeForm';
 import CertificateManager from '@/components/admin/CertificateManager';
@@ -15,6 +15,9 @@ import PayrollManager from '@/components/admin/PayrollManager';
 import HolidayManager from '@/components/admin/HolidayManager';
 import ResignationManager from '@/components/admin/ResignationManager';
 import MyProfile from '@/components/employee/MyProfile';
+import AnalyticsCharts from '@/components/admin/AnalyticsCharts';
+import ThemeToggle from '@/components/ThemeToggle';
+import { toast } from 'sonner';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Profile = Tables<'profiles'>;
@@ -22,6 +25,7 @@ type View = 'dashboard' | 'employees' | 'add' | 'edit' | 'certificates' | 'atten
 
 const AdminDashboard = () => {
   const { role, user, profileId, loading, signOut } = useAuth();
+  const queryClient = useQueryClient();
   const [view, setView] = useState<View>('dashboard');
   const [selectedEmployee, setSelectedEmployee] = useState<Profile | null>(null);
 
@@ -76,6 +80,29 @@ const AdminDashboard = () => {
     { label: 'Pending Leaves', value: String(pendingLeaves), icon: ClipboardList, color: 'text-warning' },
     { label: 'Monthly Payroll', value: `₹${Number(monthlyPayroll).toLocaleString()}`, icon: DollarSign, color: 'text-success' },
   ];
+
+  const resetLeaveBalances = async () => {
+    const year = new Date().getFullYear();
+    const { data: existing } = await supabase.from('leave_balances').select('employee_id').eq('year', year);
+    const existingIds = new Set((existing || []).map((e: any) => e.employee_id));
+    const newBalances = allEmployees
+      .filter((e: any) => !existingIds.has(e.id))
+      .map((e: any) => ({ employee_id: e.id, year, casual_leave_used: 0, sick_leave_used: 0 }));
+    if (newBalances.length > 0) {
+      await supabase.from('leave_balances').insert(newBalances);
+      toast.success(`Created leave balances for ${newBalances.length} employees`);
+    } else {
+      toast.info('All employees already have leave balances for this year');
+    }
+  };
+
+  const { data: allEmployees = [] } = useQuery({
+    queryKey: ['employees'],
+    queryFn: async () => {
+      const { data } = await supabase.from('profiles').select('id');
+      return data || [];
+    },
+  });
 
   const modules = [
     { label: 'Employees', desc: 'Manage employee profiles', icon: Users, action: () => setView('employees') },
@@ -158,6 +185,14 @@ const AdminDashboard = () => {
                 ))}
               </div>
             </div>
+
+            <div className="flex items-center justify-between mt-6 mb-2">
+              <h2 className="text-xl font-semibold text-foreground">Analytics</h2>
+              <Button variant="outline" size="sm" onClick={resetLeaveBalances}>
+                <RefreshCw className="w-4 h-4 mr-1" /> Reset Leave Balances ({new Date().getFullYear()})
+              </Button>
+            </div>
+            <AnalyticsCharts />
           </div>
         );
     }
@@ -179,6 +214,7 @@ const AdminDashboard = () => {
             </button>
           </div>
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             <Button variant="ghost" size="sm" onClick={() => setView('my-profile')}>
               <User className="w-4 h-4 mr-2" /> Profile
             </Button>

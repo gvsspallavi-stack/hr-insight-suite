@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, Search, Edit, FileUp, Trash2 } from 'lucide-react';
 import type { Tables } from '@/integrations/supabase/types';
 
@@ -18,6 +19,7 @@ interface EmployeeListProps {
 
 const EmployeeList = ({ onAdd, onEdit, onCertificates }: EmployeeListProps) => {
   const [search, setSearch] = useState('');
+  const [deptFilter, setDeptFilter] = useState('all');
 
   const { data: employees = [], isLoading, refetch } = useQuery({
     queryKey: ['employees'],
@@ -33,32 +35,48 @@ const EmployeeList = ({ onAdd, onEdit, onCertificates }: EmployeeListProps) => {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this employee?')) return;
-    // Delete profile - this will cascade
     await supabase.from('profiles').delete().eq('id', id);
     refetch();
   };
 
+  const departments = useMemo(() => {
+    const depts = new Set(employees.map(e => e.department).filter(Boolean));
+    return Array.from(depts).sort() as string[];
+  }, [employees]);
+
   const filtered = employees.filter(
-    (e) =>
-      e.full_name.toLowerCase().includes(search.toLowerCase()) ||
-      e.email?.toLowerCase().includes(search.toLowerCase()) ||
-      e.department?.toLowerCase().includes(search.toLowerCase())
+    (e) => {
+      const matchesSearch = e.full_name.toLowerCase().includes(search.toLowerCase()) ||
+        e.email?.toLowerCase().includes(search.toLowerCase()) ||
+        e.department?.toLowerCase().includes(search.toLowerCase());
+      const matchesDept = deptFilter === 'all' || e.department === deptFilter;
+      return matchesSearch && matchesDept;
+    }
   );
 
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <h2 className="text-xl font-semibold text-foreground">All Employees</h2>
-        <div className="flex items-center gap-2 w-full sm:w-auto">
+        <div className="flex items-center gap-2 w-full sm:w-auto flex-wrap">
           <div className="relative flex-1 sm:flex-none">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               placeholder="Search employees..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 w-full sm:w-64"
+              className="pl-9 w-full sm:w-56"
             />
           </div>
+          <Select value={deptFilter} onValueChange={setDeptFilter}>
+            <SelectTrigger className="w-40">
+              <SelectValue placeholder="All Departments" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Departments</SelectItem>
+              {departments.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
+            </SelectContent>
+          </Select>
           <Button onClick={onAdd} size="sm">
             <Plus className="w-4 h-4 mr-1" /> Add Employee
           </Button>
