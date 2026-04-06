@@ -85,7 +85,7 @@ const AdminDashboard = () => {
     const year = new Date().getFullYear();
     const { data: existing } = await supabase.from('leave_balances').select('employee_id').eq('year', year);
     const existingIds = new Set((existing || []).map((e: any) => e.employee_id));
-    const newBalances = employees
+    const newBalances = allEmployees
       .filter((e: any) => !existingIds.has(e.id))
       .map((e: any) => ({ employee_id: e.id, year, casual_leave_used: 0, sick_leave_used: 0 }));
     if (newBalances.length > 0) {
