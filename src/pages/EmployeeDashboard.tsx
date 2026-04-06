@@ -170,9 +170,12 @@ const EmployeeDashboard = () => {
               </div>
             </button>
           </div>
-          <Button variant="outline" size="sm" onClick={signOut}>
-            <LogOut className="w-4 h-4 mr-2" /> Sign Out
-          </Button>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <Button variant="outline" size="sm" onClick={signOut}>
+              <LogOut className="w-4 h-4 mr-2" /> Sign Out
+            </Button>
+          </div>
         </div>
       </header>
 

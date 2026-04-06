@@ -185,6 +185,14 @@ const AdminDashboard = () => {
                 ))}
               </div>
             </div>
+
+            <div className="flex items-center justify-between mt-6 mb-2">
+              <h2 className="text-xl font-semibold text-foreground">Analytics</h2>
+              <Button variant="outline" size="sm" onClick={resetLeaveBalances}>
+                <RefreshCw className="w-4 h-4 mr-1" /> Reset Leave Balances ({new Date().getFullYear()})
+              </Button>
+            </div>
+            <AnalyticsCharts />
           </div>
         );
     }
@@ -206,6 +214,7 @@ const AdminDashboard = () => {
             </button>
           </div>
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             <Button variant="ghost" size="sm" onClick={() => setView('my-profile')}>
               <User className="w-4 h-4 mr-2" /> Profile
             </Button>
