@@ -81,6 +81,29 @@ const AdminDashboard = () => {
     { label: 'Monthly Payroll', value: `₹${Number(monthlyPayroll).toLocaleString()}`, icon: DollarSign, color: 'text-success' },
   ];
 
+  const resetLeaveBalances = async () => {
+    const year = new Date().getFullYear();
+    const { data: existing } = await supabase.from('leave_balances').select('employee_id').eq('year', year);
+    const existingIds = new Set((existing || []).map((e: any) => e.employee_id));
+    const newBalances = employees
+      .filter((e: any) => !existingIds.has(e.id))
+      .map((e: any) => ({ employee_id: e.id, year, casual_leave_used: 0, sick_leave_used: 0 }));
+    if (newBalances.length > 0) {
+      await supabase.from('leave_balances').insert(newBalances);
+      toast.success(`Created leave balances for ${newBalances.length} employees`);
+    } else {
+      toast.info('All employees already have leave balances for this year');
+    }
+  };
+
+  const { data: allEmployees = [] } = useQuery({
+    queryKey: ['employees'],
+    queryFn: async () => {
+      const { data } = await supabase.from('profiles').select('id');
+      return data || [];
+    },
+  });
+
   const modules = [
     { label: 'Employees', desc: 'Manage employee profiles', icon: Users, action: () => setView('employees') },
     { label: 'Attendance', desc: 'Track daily attendance', icon: CalendarCheck, action: () => setView('attendance') },
