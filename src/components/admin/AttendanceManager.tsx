@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { DateInput } from '@/components/ui/date-input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, CalendarCheck } from 'lucide-react';
+import { ArrowLeft, CalendarCheck, Download } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface AttendanceManagerProps {

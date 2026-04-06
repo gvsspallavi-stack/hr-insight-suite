@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { MonthInput } from '@/components/ui/month-input';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, DollarSign, Calculator } from 'lucide-react';
+import { ArrowLeft, DollarSign, Calculator, Download } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface PayrollManagerProps {
