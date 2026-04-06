@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CalendarCheck, FileText, DollarSign, LogOut, ClipboardList, FolderOpen, User, ArrowLeft, Eye, Download, CalendarDays } from 'lucide-react';
+import ThemeToggle from '@/components/ThemeToggle';
 import MyAttendance from '@/components/employee/MyAttendance';
 import LeaveRequestForm from '@/components/employee/LeaveRequestForm';
 import MyPayslips from '@/components/employee/MyPayslips';

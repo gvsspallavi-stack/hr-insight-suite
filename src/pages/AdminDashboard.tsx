@@ -3,9 +3,9 @@ import { useAuth } from '@/hooks/useAuth';
 import { Navigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Users, CalendarCheck, ClipboardList, DollarSign, LogOut, FolderOpen, Calendar, FileText, User } from 'lucide-react';
+import { Users, CalendarCheck, ClipboardList, DollarSign, LogOut, FolderOpen, Calendar, FileText, User, RefreshCw } from 'lucide-react';
 import EmployeeList from '@/components/admin/EmployeeList';
 import EmployeeForm from '@/components/admin/EmployeeForm';
 import CertificateManager from '@/components/admin/CertificateManager';
@@ -15,6 +15,9 @@ import PayrollManager from '@/components/admin/PayrollManager';
 import HolidayManager from '@/components/admin/HolidayManager';
 import ResignationManager from '@/components/admin/ResignationManager';
 import MyProfile from '@/components/employee/MyProfile';
+import AnalyticsCharts from '@/components/admin/AnalyticsCharts';
+import ThemeToggle from '@/components/ThemeToggle';
+import { toast } from 'sonner';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Profile = Tables<'profiles'>;
@@ -22,6 +25,7 @@ type View = 'dashboard' | 'employees' | 'add' | 'edit' | 'certificates' | 'atten
 
 const AdminDashboard = () => {
   const { role, user, profileId, loading, signOut } = useAuth();
+  const queryClient = useQueryClient();
   const [view, setView] = useState<View>('dashboard');
   const [selectedEmployee, setSelectedEmployee] = useState<Profile | null>(null);
 
