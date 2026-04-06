@@ -137,6 +137,26 @@ const PayrollManager = ({ onBack }: PayrollManagerProps) => {
 
   const { workingDays, totalDays, holidayCount } = getWorkingDays(month);
 
+  const exportCSV = () => {
+    if (payrollRecords.length === 0) { toast.error('No payroll data to export'); return; }
+    const rows = [['Employee', 'Department', 'Base Salary', 'Working Days', 'Leaves', 'LOP Days', 'Tax Deduction', 'Net Salary']];
+    payrollRecords.forEach((p: any) => {
+      rows.push([
+        p.profiles?.full_name || '', p.profiles?.department || '',
+        p.base_salary, p.total_working_days, p.leaves_taken, p.lop_days, p.tax_deduction, p.net_salary
+      ]);
+    });
+    const csv = rows.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `payroll-${month}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success('Payroll CSV exported');
+  };
+
   return (
     <div className="space-y-4">
       <button onClick={onBack} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
@@ -154,6 +174,9 @@ const PayrollManager = ({ onBack }: PayrollManagerProps) => {
               <Input type="number" value={taxRate} onChange={(e) => setTaxRate(Number(e.target.value))} className="w-20" placeholder="Tax %" min={0} max={100} />
               <Button size="sm" onClick={generatePayroll} disabled={generating}>
                 <Calculator className="w-4 h-4 mr-1" /> {generating ? 'Generating...' : 'Generate'}
+              </Button>
+              <Button size="sm" variant="outline" onClick={exportCSV}>
+                <Download className="w-4 h-4 mr-1" /> CSV
               </Button>
             </div>
           </div>

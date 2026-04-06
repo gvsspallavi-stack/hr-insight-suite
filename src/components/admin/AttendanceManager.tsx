@@ -108,6 +108,22 @@ const AttendanceManager = ({ onBack }: AttendanceManagerProps) => {
     setSaving(false);
   };
 
+  const exportCSV = () => {
+    const rows = [['Employee', 'Department', 'Date', 'Status']];
+    employees.forEach((emp: any) => {
+      rows.push([emp.full_name, emp.department || '', selectedDate, getStatus(emp.id)]);
+    });
+    const csv = rows.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `attendance-${selectedDate}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success('Attendance CSV exported');
+  };
+
   return (
     <div className="space-y-4">
       <button onClick={onBack} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
@@ -124,6 +140,9 @@ const AttendanceManager = ({ onBack }: AttendanceManagerProps) => {
               <DateInput value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} className="w-auto" />
               <Button size="sm" onClick={markAllPresent} disabled={saving || isHoliday || isSunday}>
                 Mark All Present
+              </Button>
+              <Button size="sm" variant="outline" onClick={exportCSV}>
+                <Download className="w-4 h-4 mr-1" /> CSV
               </Button>
             </div>
           </div>
