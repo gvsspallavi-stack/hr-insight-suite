@@ -149,6 +149,12 @@ const AdminDashboard = () => {
         return <HolidayManager onBack={() => setView('dashboard')} />;
       case 'resignations':
         return <ResignationManager onBack={() => setView('dashboard')} />;
+      case 'attendance-report':
+        return <AttendanceReport onBack={() => setView('dashboard')} />;
+      case 'bulk-attendance':
+        return <BulkAttendanceUpload onBack={() => setView('dashboard')} />;
+      case 'audit-log':
+        return <AuditLog onBack={() => setView('dashboard')} />;
       case 'my-profile':
         return profileId ? <MyProfile profileId={profileId} onBack={() => setView('dashboard')} /> : null;
       default:
