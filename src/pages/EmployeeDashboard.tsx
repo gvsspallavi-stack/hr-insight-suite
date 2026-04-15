@@ -6,7 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CalendarCheck, FileText, DollarSign, LogOut, ClipboardList, FolderOpen, User, ArrowLeft, Eye, Download, CalendarDays } from 'lucide-react';
+import { CalendarCheck, FileText, DollarSign, LogOut, ClipboardList, FolderOpen, User, ArrowLeft, Eye, Download, CalendarDays, Bell } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
 import MyAttendance from '@/components/employee/MyAttendance';
 import LeaveRequestForm from '@/components/employee/LeaveRequestForm';
@@ -14,9 +14,11 @@ import MyPayslips from '@/components/employee/MyPayslips';
 import ResignationForm from '@/components/employee/ResignationForm';
 import MyProfile from '@/components/employee/MyProfile';
 import HolidayCalendar from '@/components/employee/HolidayCalendar';
+import DashboardStats from '@/components/employee/DashboardStats';
+import NotificationsList from '@/components/employee/NotificationsList';
 import { openCertificatePreview } from '@/lib/certificate-preview';
 
-type View = 'dashboard' | 'profile' | 'certificates' | 'attendance' | 'leaves' | 'payslips' | 'resignation' | 'holidays';
+type View = 'dashboard' | 'profile' | 'certificates' | 'attendance' | 'leaves' | 'payslips' | 'resignation' | 'holidays' | 'notifications';
 
 const EmployeeDashboard = () => {
   const { role, user, profileId, loading, signOut } = useAuth();
