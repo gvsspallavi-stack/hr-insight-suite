@@ -104,13 +104,6 @@ const AdminDashboard = () => {
     }
   };
 
-  const { data: allEmployees = [] } = useQuery({
-    queryKey: ['employees'],
-    queryFn: async () => {
-      const { data } = await supabase.from('profiles').select('id');
-      return data || [];
-    },
-  });
 
   const modules = [
     { label: 'Employees', desc: 'Manage employee profiles', icon: Users, action: () => setView('employees') },
