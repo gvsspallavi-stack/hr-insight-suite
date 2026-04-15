@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Users, CalendarCheck, ClipboardList, DollarSign, LogOut, FolderOpen, Calendar, FileText, User, RefreshCw } from 'lucide-react';
+import { Users, CalendarCheck, ClipboardList, DollarSign, LogOut, FolderOpen, Calendar, FileText, User, RefreshCw, BarChart3, FileUp, ScrollText } from 'lucide-react';
 import EmployeeList from '@/components/admin/EmployeeList';
 import EmployeeForm from '@/components/admin/EmployeeForm';
 import CertificateManager from '@/components/admin/CertificateManager';
@@ -14,6 +14,9 @@ import LeaveManager from '@/components/admin/LeaveManager';
 import PayrollManager from '@/components/admin/PayrollManager';
 import HolidayManager from '@/components/admin/HolidayManager';
 import ResignationManager from '@/components/admin/ResignationManager';
+import AttendanceReport from '@/components/admin/AttendanceReport';
+import BulkAttendanceUpload from '@/components/admin/BulkAttendanceUpload';
+import AuditLog from '@/components/admin/AuditLog';
 import MyProfile from '@/components/employee/MyProfile';
 import AnalyticsCharts from '@/components/admin/AnalyticsCharts';
 import ThemeToggle from '@/components/ThemeToggle';
@@ -21,7 +24,7 @@ import { toast } from 'sonner';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Profile = Tables<'profiles'>;
-type View = 'dashboard' | 'employees' | 'add' | 'edit' | 'certificates' | 'attendance' | 'leaves' | 'payroll' | 'documents' | 'holidays' | 'resignations' | 'my-profile';
+type View = 'dashboard' | 'employees' | 'add' | 'edit' | 'certificates' | 'attendance' | 'leaves' | 'payroll' | 'documents' | 'holidays' | 'resignations' | 'my-profile' | 'attendance-report' | 'bulk-attendance' | 'audit-log';
 
 const AdminDashboard = () => {
   const { role, user, profileId, loading, signOut } = useAuth();
