@@ -32,6 +32,14 @@ const AdminDashboard = () => {
   const today = new Date().toISOString().split('T')[0];
   const currentMonth = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
 
+  const { data: allEmployees = [] } = useQuery({
+    queryKey: ['employees'],
+    queryFn: async () => {
+      const { data } = await supabase.from('profiles').select('id');
+      return data || [];
+    },
+  });
+
   const { data: employeeCount = 0 } = useQuery({
     queryKey: ['employee-count'],
     queryFn: async () => {
