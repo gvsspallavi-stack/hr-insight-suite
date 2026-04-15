@@ -105,11 +105,11 @@ const ResignationManager = ({ onBack }: ResignationManagerProps) => {
 
                   {/* Approval chain */}
                   <div className="grid grid-cols-3 gap-3">
-                    {[
-                      { label: 'HOD', field: 'hod_approval', status: res.hod_approval },
-                      { label: 'Principal', field: 'principal_approval', status: res.principal_approval },
-                      { label: 'Director', field: 'director_approval', status: res.director_approval },
-                    ].map((step) => (
+                    {([
+                      { label: 'HOD', field: 'hod_approval' as const, status: res.hod_approval },
+                      { label: 'Principal', field: 'principal_approval' as const, status: res.principal_approval },
+                      { label: 'Director', field: 'director_approval' as const, status: res.director_approval },
+                    ] as const).map((step) => (
                       <div key={step.label} className="text-center p-3 rounded-lg border border-border space-y-2">
                         <p className="text-xs text-muted-foreground font-medium">{step.label}</p>
                         <Badge className={statusColors[step.status || 'pending'] + ' text-xs'}>
