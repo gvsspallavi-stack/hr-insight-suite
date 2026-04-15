@@ -6,7 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CalendarCheck, FileText, DollarSign, LogOut, ClipboardList, FolderOpen, User, ArrowLeft, Eye, Download, CalendarDays } from 'lucide-react';
+import { CalendarCheck, FileText, DollarSign, LogOut, ClipboardList, FolderOpen, User, ArrowLeft, Eye, Download, CalendarDays, Bell } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
 import MyAttendance from '@/components/employee/MyAttendance';
 import LeaveRequestForm from '@/components/employee/LeaveRequestForm';
@@ -14,9 +14,11 @@ import MyPayslips from '@/components/employee/MyPayslips';
 import ResignationForm from '@/components/employee/ResignationForm';
 import MyProfile from '@/components/employee/MyProfile';
 import HolidayCalendar from '@/components/employee/HolidayCalendar';
+import DashboardStats from '@/components/employee/DashboardStats';
+import NotificationsList from '@/components/employee/NotificationsList';
 import { openCertificatePreview } from '@/lib/certificate-preview';
 
-type View = 'dashboard' | 'profile' | 'certificates' | 'attendance' | 'leaves' | 'payslips' | 'resignation' | 'holidays';
+type View = 'dashboard' | 'profile' | 'certificates' | 'attendance' | 'leaves' | 'payslips' | 'resignation' | 'holidays' | 'notifications';
 
 const EmployeeDashboard = () => {
   const { role, user, profileId, loading, signOut } = useAuth();
@@ -73,6 +75,7 @@ const EmployeeDashboard = () => {
     if (view === 'payslips') return <MyPayslips onBack={() => setView('dashboard')} />;
     if (view === 'resignation') return <ResignationForm onBack={() => setView('dashboard')} />;
     if (view === 'holidays') return <HolidayCalendar onBack={() => setView('dashboard')} />;
+    if (view === 'notifications') return <NotificationsList onBack={() => setView('dashboard')} />;
     if (view === 'profile' && profileId) return <MyProfile profileId={profileId} onBack={() => setView('dashboard')} />;
 
     if (view === 'certificates') {
@@ -118,6 +121,7 @@ const EmployeeDashboard = () => {
     // Dashboard
     const quickActions = [
       { label: 'My Profile', desc: 'View your information', icon: User, action: () => setView('profile') },
+      { label: 'Notifications', desc: 'View alerts & updates', icon: Bell, action: () => setView('notifications') },
       { label: 'Holiday Calendar', desc: 'View upcoming holidays', icon: CalendarDays, action: () => setView('holidays') },
       { label: 'My Certificates', desc: 'View uploaded certificates', icon: FolderOpen, action: () => setView('certificates') },
       { label: 'My Attendance', desc: 'View attendance records', icon: CalendarCheck, action: () => setView('attendance') },
@@ -128,6 +132,8 @@ const EmployeeDashboard = () => {
 
     return (
       <div className="space-y-8">
+        <DashboardStats />
+
         <Card className="bg-primary text-primary-foreground border-0">
           <CardContent className="p-6">
             <h2 className="text-2xl font-bold">Welcome, {profile?.full_name || 'Employee'}!</h2>

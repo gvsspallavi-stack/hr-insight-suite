@@ -59,6 +59,44 @@ export type Database = {
           },
         ]
       }
+      audit_log: {
+        Row: {
+          action: string
+          admin_id: string | null
+          created_at: string
+          details: Json | null
+          id: string
+          target_id: string | null
+          target_table: string
+        }
+        Insert: {
+          action: string
+          admin_id?: string | null
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_id?: string | null
+          target_table: string
+        }
+        Update: {
+          action?: string
+          admin_id?: string | null
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_id?: string | null
+          target_table?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_log_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       documents: {
         Row: {
           created_at: string
@@ -210,6 +248,41 @@ export type Database = {
           },
           {
             foreignKeyName: "leave_requests_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          created_at: string
+          employee_id: string
+          id: string
+          message: string
+          read: boolean
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          employee_id: string
+          id?: string
+          message: string
+          read?: boolean
+          title: string
+        }
+        Update: {
+          created_at?: string
+          employee_id?: string
+          id?: string
+          message?: string
+          read?: boolean
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_employee_id_fkey"
             columns: ["employee_id"]
             isOneToOne: false
             referencedRelation: "profiles"

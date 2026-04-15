@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Users, CalendarCheck, ClipboardList, DollarSign, LogOut, FolderOpen, Calendar, FileText, User, RefreshCw } from 'lucide-react';
+import { Users, CalendarCheck, ClipboardList, DollarSign, LogOut, FolderOpen, Calendar, FileText, User, RefreshCw, BarChart3, FileUp, ScrollText } from 'lucide-react';
 import EmployeeList from '@/components/admin/EmployeeList';
 import EmployeeForm from '@/components/admin/EmployeeForm';
 import CertificateManager from '@/components/admin/CertificateManager';
@@ -14,6 +14,9 @@ import LeaveManager from '@/components/admin/LeaveManager';
 import PayrollManager from '@/components/admin/PayrollManager';
 import HolidayManager from '@/components/admin/HolidayManager';
 import ResignationManager from '@/components/admin/ResignationManager';
+import AttendanceReport from '@/components/admin/AttendanceReport';
+import BulkAttendanceUpload from '@/components/admin/BulkAttendanceUpload';
+import AuditLog from '@/components/admin/AuditLog';
 import MyProfile from '@/components/employee/MyProfile';
 import AnalyticsCharts from '@/components/admin/AnalyticsCharts';
 import ThemeToggle from '@/components/ThemeToggle';
@@ -21,7 +24,7 @@ import { toast } from 'sonner';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Profile = Tables<'profiles'>;
-type View = 'dashboard' | 'employees' | 'add' | 'edit' | 'certificates' | 'attendance' | 'leaves' | 'payroll' | 'documents' | 'holidays' | 'resignations' | 'my-profile';
+type View = 'dashboard' | 'employees' | 'add' | 'edit' | 'certificates' | 'attendance' | 'leaves' | 'payroll' | 'documents' | 'holidays' | 'resignations' | 'my-profile' | 'attendance-report' | 'bulk-attendance' | 'audit-log';
 
 const AdminDashboard = () => {
   const { role, user, profileId, loading, signOut } = useAuth();
@@ -108,11 +111,14 @@ const AdminDashboard = () => {
   const modules = [
     { label: 'Employees', desc: 'Manage employee profiles', icon: Users, action: () => setView('employees') },
     { label: 'Attendance', desc: 'Track daily attendance', icon: CalendarCheck, action: () => setView('attendance') },
+    { label: 'Attendance Report', desc: 'Monthly summary per employee', icon: BarChart3, action: () => setView('attendance-report') },
+    { label: 'Bulk Upload', desc: 'Import attendance via CSV', icon: FileUp, action: () => setView('bulk-attendance') },
     { label: 'Leave Requests', desc: 'Approve or reject leaves', icon: ClipboardList, action: () => setView('leaves') },
     { label: 'Payroll', desc: 'Generate salary slips', icon: DollarSign, action: () => setView('payroll') },
     { label: 'Holidays', desc: 'Manage holiday calendar', icon: Calendar, action: () => setView('holidays') },
     { label: 'Documents', desc: 'Upload & manage files', icon: FolderOpen, action: () => setView('employees') },
     { label: 'Resignations', desc: 'Manage resignation requests', icon: FileText, action: () => setView('resignations') },
+    { label: 'Audit Log', desc: 'Track all admin actions', icon: ScrollText, action: () => setView('audit-log') },
   ];
 
   const renderContent = () => {
@@ -143,6 +149,12 @@ const AdminDashboard = () => {
         return <HolidayManager onBack={() => setView('dashboard')} />;
       case 'resignations':
         return <ResignationManager onBack={() => setView('dashboard')} />;
+      case 'attendance-report':
+        return <AttendanceReport onBack={() => setView('dashboard')} />;
+      case 'bulk-attendance':
+        return <BulkAttendanceUpload onBack={() => setView('dashboard')} />;
+      case 'audit-log':
+        return <AuditLog onBack={() => setView('dashboard')} />;
       case 'my-profile':
         return profileId ? <MyProfile profileId={profileId} onBack={() => setView('dashboard')} /> : null;
       default:

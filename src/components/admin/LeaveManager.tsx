@@ -103,6 +103,24 @@ const LeaveManager = ({ onBack }: LeaveManagerProps) => {
       }
     }
 
+    // Create notification for employee
+    await supabase.from('notifications').insert({
+      employee_id: request.employee_id,
+      title: `Leave ${status.charAt(0).toUpperCase() + status.slice(1)}`,
+      message: `Your ${request.leave_type} leave from ${request.start_date} to ${request.end_date} has been ${status}.`,
+    });
+
+    // Audit log
+    if (profileId) {
+      await supabase.from('audit_log').insert({
+        admin_id: profileId,
+        action: `Leave ${status}`,
+        target_table: 'leave_requests',
+        target_id: id,
+        details: { employee_id: request.employee_id, leave_type: request.leave_type, start_date: request.start_date, end_date: request.end_date },
+      });
+    }
+
     toast.success(`Leave ${status}`);
     queryClient.invalidateQueries({ queryKey: ['all-leave-requests'] });
   };
