@@ -111,11 +111,14 @@ const AdminDashboard = () => {
   const modules = [
     { label: 'Employees', desc: 'Manage employee profiles', icon: Users, action: () => setView('employees') },
     { label: 'Attendance', desc: 'Track daily attendance', icon: CalendarCheck, action: () => setView('attendance') },
+    { label: 'Attendance Report', desc: 'Monthly summary per employee', icon: BarChart3, action: () => setView('attendance-report') },
+    { label: 'Bulk Upload', desc: 'Import attendance via CSV', icon: FileUp, action: () => setView('bulk-attendance') },
     { label: 'Leave Requests', desc: 'Approve or reject leaves', icon: ClipboardList, action: () => setView('leaves') },
     { label: 'Payroll', desc: 'Generate salary slips', icon: DollarSign, action: () => setView('payroll') },
     { label: 'Holidays', desc: 'Manage holiday calendar', icon: Calendar, action: () => setView('holidays') },
     { label: 'Documents', desc: 'Upload & manage files', icon: FolderOpen, action: () => setView('employees') },
     { label: 'Resignations', desc: 'Manage resignation requests', icon: FileText, action: () => setView('resignations') },
+    { label: 'Audit Log', desc: 'Track all admin actions', icon: ScrollText, action: () => setView('audit-log') },
   ];
 
   const renderContent = () => {
