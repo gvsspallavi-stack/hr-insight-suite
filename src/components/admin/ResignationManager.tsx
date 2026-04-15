@@ -31,13 +31,23 @@ const ResignationManager = ({ onBack }: ResignationManagerProps) => {
     },
   });
 
-  const handleApproval = async (id: string, field: string, status: 'approved' | 'rejected') => {
-    const updateData: Record<string, string> = { [field]: status };
+  const handleApproval = async (id: string, field: 'hod_approval' | 'principal_approval' | 'director_approval', status: 'approved' | 'rejected') => {
+    const updateData: { 
+      hod_approval?: string; 
+      principal_approval?: string; 
+      director_approval?: string; 
+      final_status?: string;
+    } = { [field]: status };
 
     // Check if all stages are approved to set final_status
     const resignation = resignations.find((r: any) => r.id === id);
     if (resignation && status === 'approved') {
-      const stages = { hod_approval: resignation.hod_approval, principal_approval: resignation.principal_approval, director_approval: resignation.director_approval, [field]: status };
+      const stages = { 
+        hod_approval: resignation.hod_approval, 
+        principal_approval: resignation.principal_approval, 
+        director_approval: resignation.director_approval, 
+        [field]: status 
+      };
       if (stages.hod_approval === 'approved' && stages.principal_approval === 'approved' && stages.director_approval === 'approved') {
         updateData.final_status = 'approved';
       }
