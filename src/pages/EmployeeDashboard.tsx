@@ -75,6 +75,7 @@ const EmployeeDashboard = () => {
     if (view === 'payslips') return <MyPayslips onBack={() => setView('dashboard')} />;
     if (view === 'resignation') return <ResignationForm onBack={() => setView('dashboard')} />;
     if (view === 'holidays') return <HolidayCalendar onBack={() => setView('dashboard')} />;
+    if (view === 'notifications') return <NotificationsList onBack={() => setView('dashboard')} />;
     if (view === 'profile' && profileId) return <MyProfile profileId={profileId} onBack={() => setView('dashboard')} />;
 
     if (view === 'certificates') {
