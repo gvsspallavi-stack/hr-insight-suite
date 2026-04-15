@@ -132,6 +132,8 @@ const EmployeeDashboard = () => {
 
     return (
       <div className="space-y-8">
+        <DashboardStats />
+
         <Card className="bg-primary text-primary-foreground border-0">
           <CardContent className="p-6">
             <h2 className="text-2xl font-bold">Welcome, {profile?.full_name || 'Employee'}!</h2>
